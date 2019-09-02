@@ -1,0 +1,23 @@
+body{
+    font-family: Verdana;
+    font-size: 1.2em;
+}
+
+p {
+    /* font-size: 2.2em; */
+    /* font-family: Verdana; */
+    color: #42a6a2;
+}
+
+section {
+    font-size: 2em; 
+    color: magenta;
+}
+
+#test1 {
+    color: blue;
+}
+
+.test1 {
+    color: aqua;
+}
