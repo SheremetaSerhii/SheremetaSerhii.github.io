@@ -1,0 +1,20 @@
+div > section > p {
+    background-color: yellow;
+}
+
+div +p {
+    background-color: red;
+}
+
+a[href*="kar"] {
+    background-color: greenyellow;
+}
+
+a[href$="ua"] {
+    background-color: lightblue;
+}
+
+a[ssss="new"]{
+    background-color: lightcoral;
+}
+
