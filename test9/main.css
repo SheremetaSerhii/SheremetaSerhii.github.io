@@ -18,3 +18,36 @@ a[ssss="new"]{
     background-color: lightcoral;
 }
 
+div > p:hover {
+    font-style: italic;
+}
+
+a:link {
+    text-decoration: none;
+    cursor: text;
+    color: inherit;
+}
+
+a:visited {
+    color: inherit;
+}
+
+ul > :nth-child(2n) {
+    background-color: aquamarine;
+}
+
+ul > :nth-child(5) {
+    background-color: red;
+}
+
+/* div {
+    width: 100px;
+    height: 100px;
+    background-color: aquamarine;
+    border: 2px solid #000000;
+}
+
+div:empty{
+    background-color: yellow;
+} */
+
