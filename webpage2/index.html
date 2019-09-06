@@ -4,7 +4,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>Sleep Number</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link href='https://fonts.googleapis.com/css?family=Encode Sans Expanded' rel='stylesheet'>
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
@@ -14,51 +14,98 @@
 <body>
 
     <header>
-
+        <section id="h_logo">
+            <img src="resources/logo.png" alt="sleep number logo">
+            <div><p>400 STORES</p></div>
+            <div><p>NATIONWIDE!</p></div>
+        </section>
+        <section id="h_signup">
+            <h4>Looking for More Sleep Number Info?</h4>
+            <p>Sign up tp receive our DVD, email news and deals. New Customer? Get $50 in savings.</p>
+            <h5><span class="orangeball">→</span>SING_UP_NOW!</h5>
+        </section>
+        <section id="h_shopping">
+            <div>
+                <span class="orangeball">1</span>
+                <span>SHOP ONLINE</span>
+                <a>🛒Cart(0)</a>
+            </div>
+            <p>1-888-411-2188</p>
+            <div>
+                <span class="orangeball">3</span>
+                <span>FIND OUR STORES</span>
+                <input type="number" name="zip_code" placeholder="Enter Zip">
+                <input type="submit" name="submit_zip_code" value="→" class="orangeball">
+            </div>
+        </section>
+        <section id="h_image">
+            <img src="resources/shop.png" alt="sleep number shop image">
+        </section>
     </header>
 
     <main>
 
         <section class="horisontal_field">
-
+            <section>
+                <div class="float_left">Search Site</div>
+                <input type="text" name="search" class="float_left">
+                <div class="orangeball">→</div>
+                <section class="hor_fld_right_algn links_line_h">
+                    <div><a href="#1">Bed Owners</a></div>
+                    <div><a href="#2">Check Order Status</a></div>
+                    <div><a href="#3">Customer Service</a></div>
+                </section>
+            </section>
         </section>
 
         <section id="main_content">
             <aside>
                 <section>
                     <header>BUY</header>
-                    <p>Sleep Number Beds</p>
-                    <p>Specialty Beds</p>
-                    <p>Pillows & Bedding</p>
-                    <p>Outlet</p>
-                    <p>Bed Specials</p>
+                    <!-- ↓→ -->
+                    <p><span class="orangeball">→</span>Sleep Number Beds</p>
+                    <p><span class="orangeball">→</span>Specialty Beds</p>
+                    <p><span class="orangeball">→</span>Pillows & Bedding</p>
+                    <p><span class="orangeball">→</span>Outlet</p>
+                    <p><span class="orangeball">→</span>Bed Specials</p>
                 </section>
                 <section>
                     <header>LEARN</header>
-                    <p>What Is Sleep Number?</p>
-                    <p>Sleep Number Research</p>
-                    <p>Sleep Number Reviews</p>
-                    <p>Compare Our Beds</p>
-                    <p>Compare Our Bases</p>
+                    <p><span class="orangeball">→</span>What Is Sleep Number?</p>
+                    <p><span class="orangeball">→</span>Sleep Number Research</p>
+                    <p><span class="orangeball">→</span>Sleep Number Reviews</p>
+                    <p><span class="orangeball">→</span>Compare Our Beds</p>
+                    <p><span class="orangeball">→</span>Compare Our Bases</p>
                 </section>
                 <section>
                     <header>TRY</header>
-                    <p>Find My Sleep Number</p>
-                    <p>How Sleep Number Works</p>
-                    <p>Visit A Sleep Number Store</p>
+                    <p><span class="orangeball">→</span>Find My Sleep Number</p>
+                    <p><span class="orangeball">→</span>How Sleep Number Works</p>
+                    <p><span class="orangeball">→</span>Visit A Sleep Number Store</p>
                 </section>
                 <footer>
-                    <p>Connect with Us</p>
+                    <p><span class="orangeball">→</span>Connect with Us</p>
                 </footer>
             </aside>
 
             <article>
-                <header>
-                    <a href='#'>🖨️Printer Friendly</a>
-                    <h2>i10 Sleep Number Bed</h2>
-                </header>
                 <section id="product_main">
+                    <header>
+                        <a href='#'>🖨️Printer Friendly</a>
+                        <h1>i10 Sleep Number bed</h1>
+                    </header>
+                    <section>
+                        <div>
 
+                        </div>
+                        <div>
+                            <span>RATING:</span>
+                            <span id="item_rating"><span class="rating_number">4.7</span> out of <span
+                                    class="rating_number">5</span></span>
+                            <br>
+                            <a href="#">Read all 32 reviews</a> <a href="#">Write a review</a>
+                        </div>
+                    </section>
                 </section>
                 <section id="product_additionaly">
 
@@ -67,13 +114,44 @@
         </section>
 
         <section class="horisontal_field">
-
+            <section>
+                <section class="hor_fld_right_algn">
+                    <div class="float_left">Country:</div>
+                    <select name="country" id="select_country" class="float_left">
+                        <option value="USA">USA</option>
+                        <option value="CAN">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="NZ">New Zeland</option>
+                        <option value="MEX">Mexico</option>
+                    </select>
+                    <div class="orangeball">→</div>
+                </section>
+                <section class="hor_fld_right_algn">
+                    <div class="float_left">Recieve the latest news on our products, research and promotions:</div>
+                    <input type="email" name="email" class="float_left" placeholder="Enter email address">
+                </section>
+            </section>
         </section>
 
     </main>
 
     <footer>
-
+        <section class="links_line_h">
+            <div><a href="#">Home</a></div>
+            <div><a href="#">About Us</a></div>
+            <div><a href="#">Careers</a></div>
+            <div><a href="#">Contact Us</a></div>
+            <div><a href="#">Specials</a></div>
+            <div><a href="#">Shipping Options</a></div>
+            <div><a href="#">Foletto En Espanol</a></div>
+            <div><a href="#">Privacy & Security</a></div>
+            <div><a href="#">Site Map</a></div>
+            <div><a href="#">Company Blog</a></div>
+        </section>
+        <p>© 2000-2010 Select Colmfort SLEEP NUMBER, SELECT COMFORT and the Double Arrow Design are registered
+            trademarks and SLEEP NUMBER BED BY COMFORT is a trademark of Select Comfort Corpotarion. <a href="#">More
+                legal.</a></p>
     </footer>
 </body>
 
