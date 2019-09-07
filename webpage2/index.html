@@ -80,25 +80,51 @@
                 <section>
                     <header>BUY</header>
                     <!-- ↓→ -->
-                    <p><span class="orangeball">→</span>Sleep Number Beds</p>
-                    <p><span class="orangeball">→</span>Specialty Beds</p>
-                    <p><span class="orangeball">→</span>Pillows & Bedding</p>
-                    <p><span class="orangeball">→</span>Outlet</p>
-                    <p><span class="orangeball">→</span>Bed Specials</p>
+                    <div>
+                        <p><span class="orangeball">→</span>Sleep Number Beds</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Specialty Beds</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Pillows & Bedding</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Outlet</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Bed Specials</p>
+                    </div>
                 </section>
                 <section>
                     <header>LEARN</header>
-                    <p><span class="orangeball">→</span>What Is Sleep Number?</p>
-                    <p><span class="orangeball">→</span>Sleep Number Research</p>
-                    <p><span class="orangeball">→</span>Sleep Number Reviews</p>
-                    <p><span class="orangeball">→</span>Compare Our Beds</p>
-                    <p><span class="orangeball">→</span>Compare Our Bases</p>
+                    <div>
+                        <p><span class="orangeball">→</span>What Is Sleep Number?</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Sleep Number Research</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Sleep Number Reviews</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Compare Our Beds</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Compare Our Bases</p>
+                    </div>
                 </section>
                 <section>
                     <header>TRY</header>
-                    <p><span class="orangeball">→</span>Find My Sleep Number</p>
-                    <p><span class="orangeball">→</span>How Sleep Number Works</p>
-                    <p><span class="orangeball">→</span>Visit A Sleep Number Store</p>
+                    <div>
+                        <p><span class="orangeball">→</span>Find My Sleep Number</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>How Sleep Number Works</p>
+                    </div>
+                    <div>
+                        <p><span class="orangeball">→</span>Visit A Sleep Number Store</p>
+                    </div>
                 </section>
                 <footer>
                     <p><span class="orangeball">→</span>Connect with Us</p>
@@ -113,24 +139,26 @@
                     </header>
                     <section>
                         <!-- LEFT SIDE -->
-                        <section>
-                            <div>
+                        <section id="product_main_left">
+                            <header>
                                 <input type="button" name="photo_tab" value="Photo">
                                 <input type="button" name="video_tab" value="Video">
-                            </div>
-                            <img src="resources/product.png" width="100%" alt="product_preview">
+                            </header>
+                            <section>
+                                <img src="resources/product.png" width="100%" alt="product_preview">
+                            </section>
                             <nav>
-                                <section class="thumbnails_list">
-                                    <input type="button" name="go_to_previous_thumb" value="◄">
-                                    <section>
-                                        <input type="button" name="thumb0" value=" ">
-                                        <input type="button" name="thumb1" value=" ">
-                                        <input type="button" name="thumb2" value=" ">
-                                        <input type="button" name="thumb3" value=" ">
+                                <section class="thumbnails_list float_left">
+                                    <input type="button" name="go_to_previous_thumb" value="◄" class="float_left">
+                                    <section class="float_left">
+                                        <div class="float_left"><input type="button" name="thumb01" value=" "></div>
+                                        <div class="float_left"><input type="button" name="thumb02" value=" "></div>
+                                        <div class="float_left"><input type="button" name="thumb03" value=" "></div>
+                                        <div class="float_left"><input type="button" name="thumb04" value=" "></div>
                                     </section>
-                                    <input type="button" name="go_to_next_thumb" value="►">
+                                    <input type="button" name="go_to_next_thumb" value="►" class="float_right">
                                 </section>
-                                <section>
+                                <section class="image_view_control float_left">
                                     <input type="button" name="zoom" value=" ">
                                     <br>
                                     <input type="button" name="enlarge" value=" ">
@@ -138,7 +166,7 @@
                             </nav>
                         </section>
                         <!-- RIGHT SIDE -->
-                        <section>
+                        <section id="product_main_right">
                             <div class="rating">
                                 <span>RATING:</span>
                                 <img src="none" id="star1">
@@ -169,7 +197,8 @@
                                 </div>
                             </div>
                             <div>
-                                <input type="button" name="add_to_cart" id="add_to_cart" value="ADD BED TO CART" class="orandebutton">
+                                <input type="button" name="add_to_cart" id="add_to_cart" value="ADD BED TO CART"
+                                    class="orandebutton">
                             </div>
                             <div>
                                 SHARE EMAIL A FRIEND

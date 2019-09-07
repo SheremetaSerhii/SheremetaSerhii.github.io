@@ -10,7 +10,7 @@ body{
 }
 
 #main_content {
-    height: 700px;
+    height: 800px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
@@ -158,6 +158,10 @@ body>header>section {
     float: left;
 }
 
+.float_right {
+    float: right;
+}
+
 /* .horisontal_field input:not([type="button"]) {
     height: 13px; 
     margin-left: 10px;
@@ -189,7 +193,6 @@ body>header>section {
     border-radius: 20px;
     /* float: left; */
     border-style: hidden;
-    cursor: pointer;
 }
 
 .orandebutton {
@@ -201,6 +204,12 @@ body>header>section {
     color: #ffffff;
     font-weight: bold;
     border-style: hidden;
+}
+
+.orandebutton:hover,
+.orangeball[type="button"]:hover,
+.orangeball[type="submit"]:hover {
+    background-color: #fcb111;
     cursor: pointer;
 }
 
@@ -247,6 +256,11 @@ aside>footer {
     margin-top: 8px;
 }
 
+aside>footer:hover, aside>section>div:hover {
+    background-color: #d5e4f1;
+    cursor: pointer;
+}
+
 article {
     width: 797px;
     margin-left: 7px;
@@ -272,15 +286,99 @@ article {
 
 #product_main>section {
     border: 1px solid #bebdbd;
-    height: 300px;
+    height: 343px;
     margin-top: 7px;
 }
 
 #product_main>section>section {
-    width: 50%;
+    /* width: 50%; */
     height: 100%;
     float: left;
 }
+
+#product_main_left {
+    width: 382px;
+}
+
+#product_main_left>header {
+    border-bottom: 1px solid #bebdbd;
+}
+
+#product_main_left>section {
+    width: 100%;
+    height: 248px;
+}
+
+#product_main_left>nav {
+    height: 74px;
+    overflow: hidden;
+}
+
+.thumbnails_list {
+    width: 298px;
+    overflow: hidden;
+}
+
+.thumbnails_list input {
+    border-style: hidden;
+}
+
+.thumbnails_list>input {
+    height: 72px;
+    font-size: 14px;
+    background-color: #ffffff;
+}
+
+.thumbnails_list>section {
+    width: 270px;
+}
+
+.thumbnails_list>section>div {
+    padding: 16px 0px 0px 3px;
+}
+
+.thumbnails_list>section input {
+    width: 64px;
+    height: 42px;
+    margin: 0px;
+}
+
+.thumbnails_list>section input[name="thumb01"] {
+    background-image: url("resources/thumbnails/thumbnail01.png");
+}
+
+.thumbnails_list>section input[name="thumb02"] {
+    background-image: url("resources/thumbnails/thumbnail02.png");
+}
+
+.thumbnails_list>section input[name="thumb03"] {
+    background-image: url("resources/thumbnails/thumbnail03.png");
+}
+
+.thumbnails_list>section input[name="thumb04"] {
+    background-image: url("resources/thumbnails/thumbnail04.png");
+}
+
+.image_view_control>input {
+    width: 84px;
+    height: 37px;
+    border-left: 1px;
+    border-right: 1px;
+    border-top: 0px;
+    border-bottom: 1px;
+    border-style: solid;
+    border-color: #bebdbd;
+}
+
+.image_view_control>input[name="zoom"] {
+    background-image: url("resources/btn_zoom.png");
+}
+
+.image_view_control>input[name="enlarge"] {
+    background-image: url("resources/btn_enlarge.png");
+}
+
+
 
 #product_additionaly {
     width: 100%;
