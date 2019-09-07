@@ -16,49 +16,66 @@
     <header>
         <section id="h_logo">
             <img src="resources/logo.png" alt="sleep number logo">
-            <div><p>400 STORES</p></div>
-            <div><p>NATIONWIDE!</p></div>
+            <div>
+                <p>400 STORES</p>
+            </div>
+            <div>
+                <p>NATIONWIDE!</p>
+            </div>
         </section>
         <section id="h_signup">
-            <h4>Looking for More Sleep Number Info?</h4>
-            <p>Sign up tp receive our DVD, email news and deals. New Customer? Get $50 in savings.</p>
-            <h5><span class="orangeball">→</span>SING_UP_NOW!</h5>
+            <div>
+                <h4>Looking for More Sleep Number Info?</h4>
+                <p>Sign up tp receive our DVD, email news and deals. New Customer?
+                    <span class="red_color">Get $50 in savings.</span></p>
+                <div>
+                    <a href="#"><span class="orangeball">→</span>SING-UP NOW!</a>
+                </div>
+            </div>
         </section>
         <section id="h_shopping">
             <div>
-                <span class="orangeball">1</span>
-                <span>SHOP ONLINE</span>
-                <a>🛒Cart(0)</a>
-            </div>
-            <p>1-888-411-2188</p>
-            <div>
-                <span class="orangeball">3</span>
-                <span>FIND OUR STORES</span>
-                <input type="number" name="zip_code" placeholder="Enter Zip">
-                <input type="submit" name="submit_zip_code" value="→" class="orangeball">
+                <div>
+                    <span class="orangeball">1</span>
+                    <span>SHOP ONLINE</span>
+                    <div id="h_shopping_cart">
+                        <a href="#">🛒Cart(0)</a>
+                    </div>
+                </div>
+                <div id="h_shopping_number">
+                    <p>1-888-411-2188</p>
+                </div>
+                <div>
+                    <span class="orangeball">3</span>
+                    <span>FIND OUR STORES</span>
+                    <input type="text" name="zip_code" id="zip_code" placeholder="Enter Zip">
+                    <input type="submit" name="submit_zip_code" value="→" class="orangeball">
+                </div>
             </div>
         </section>
         <section id="h_image">
-            <img src="resources/shop.png" alt="sleep number shop image">
+            <img src="resources/shop.png" width="100%" alt="sleep number shop image">
         </section>
     </header>
 
     <main>
 
-        <section class="horisontal_field">
+        <header class="horisontal_field">
             <section>
                 <div class="float_left">Search Site</div>
                 <input type="text" name="search" class="float_left">
-                <div class="orangeball">→</div>
+                <!-- <div class="orangeball">→</div> -->
+                <input type="button" name="search_site_button" value="→" class="orangeball">
                 <section class="hor_fld_right_algn links_line_h">
                     <div><a href="#1">Bed Owners</a></div>
                     <div><a href="#2">Check Order Status</a></div>
                     <div><a href="#3">Customer Service</a></div>
                 </section>
             </section>
-        </section>
+        </header>
 
         <section id="main_content">
+
             <aside>
                 <section>
                     <header>BUY</header>
@@ -95,29 +112,157 @@
                         <h1>i10 Sleep Number bed</h1>
                     </header>
                     <section>
-                        <div>
-
-                        </div>
-                        <div>
-                            <span>RATING:</span>
-                            <span id="item_rating"><span class="rating_number">4.7</span> out of <span
-                                    class="rating_number">5</span></span>
+                        <!-- LEFT SIDE -->
+                        <section>
+                            <div>
+                                <input type="button" name="photo_tab" value="Photo">
+                                <input type="button" name="video_tab" value="Video">
+                            </div>
+                            <img src="resources/product.png" width="100%" alt="product_preview">
+                            <nav>
+                                <section class="thumbnails_list">
+                                    <input type="button" name="go_to_previous_thumb" value="◄">
+                                    <section>
+                                        <input type="button" name="thumb0" value=" ">
+                                        <input type="button" name="thumb1" value=" ">
+                                        <input type="button" name="thumb2" value=" ">
+                                        <input type="button" name="thumb3" value=" ">
+                                    </section>
+                                    <input type="button" name="go_to_next_thumb" value="►">
+                                </section>
+                                <section>
+                                    <input type="button" name="zoom" value=" ">
+                                    <br>
+                                    <input type="button" name="enlarge" value=" ">
+                                </section>
+                            </nav>
+                        </section>
+                        <!-- RIGHT SIDE -->
+                        <section>
+                            <div class="rating">
+                                <span>RATING:</span>
+                                <img src="none" id="star1">
+                                <img src="none" id="star2">
+                                <img src="none" id="star3">
+                                <img src="none" id="star4">
+                                <img src="none" id="star5">
+                                <span id="item_rating">
+                                    <span class="rating_number">4.7</span>
+                                    out of
+                                    <span class="rating_number">5</span>
+                                </span>
+                            </div>
+                            <div class="links_line_h reviews_links">
+                                <div><a href="#">Read all 32 reviews</a></div>
+                                <div><a href="#">Write a review</a></div>
+                            </div>
                             <br>
-                            <a href="#">Read all 32 reviews</a> <a href="#">Write a review</a>
-                        </div>
+                            <div>
+                                <div>
+                                    SIZE: <a href="#">View Size Chart »</a>
+                                </div>
+                                <div>
+                                    BASE: <a href="#"> (Recommended) </a>
+                                </div>
+                                <div>
+                                    <a href="#"> MATTRESS PROTECTION </a>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="button" name="add_to_cart" id="add_to_cart" value="ADD BED TO CART" class="orandebutton">
+                            </div>
+                            <div>
+                                SHARE EMAIL A FRIEND
+                            </div>
+                        </section>
                     </section>
                 </section>
                 <section id="product_additionaly">
+                    <header>
+                        <input type="button" name="details" value="Bed Details">
+                        <input type="button" name="base_options" value="Base Options">
+                        <input type="button" name="reviews" value="Reviews">
+                    </header>
+                    <section>
+                        <header>
+                            <a href="#">Printable Reviews</a>
+                            <div>
+                                <span>Review This Product</span>
+                                <select name="sort_order" id="sort_order">
+                                    <option value="1">Choose a sort order</option>
+                                    <option value="1">Newest First</option>
+                                    <option value="0">Latest First</option>
+                                </select>
+                            </div>
+                        </header>
+                        <section>
+                            <div>
+                                <!-- UPPER LEFT -->
+                                <div>
+                                    <div>
+                                        <div>Overall:</div>
+                                        <img src="none" id="overall_1">
+                                        <img src="none" id="overall_2">
+                                        <img src="none" id="overall_3">
+                                        <img src="none" id="overall_4">
+                                        <img src="none" id="overall_5">
+                                    </div>
+                                    <div>
+                                        <div>Comfort:</div>
+                                        <img src="none" id="comfort_1">
+                                        <img src="none" id="comfort_2">
+                                        <img src="none" id="comfort_3">
+                                        <img src="none" id="comfort_4">
+                                        <img src="none" id="comfort_5">
+                                    </div>
+                                    <div>
+                                        <div>Quality:</div>
+                                        <img src="none" id="quality_1">
+                                        <img src="none" id="quality_2">
+                                        <img src="none" id="quality_3">
+                                        <img src="none" id="quality_4">
+                                        <img src="none" id="quality_5">
+                                    </div>
+                                    <div>
+                                        <div>Value:</div>
+                                        <img src="none" id="value_1">
+                                        <img src="none" id="value_2">
+                                        <img src="none" id="value_3">
+                                        <img src="none" id="value_4">
+                                        <img src="none" id="value_5">
+                                    </div>
+                                </div>
+                                <!-- DOWN LEFT -->
+                                <div>
+                                    <p>High Desert Sleeper</p>
+                                    <p><span>Location:</span> Santa Fe, Nm</p>
+                                </div>
 
+                            </div>
+                            <!-- RIGHT -->
+                            <div>
+
+                            </div>
+                        </section>
+                        <footer>
+                            <div>
+                                <p>1-4 of 32</p>
+                            </div>
+                            <div>
+                                <a href="#">Next Page</a>
+                            </div>
+                        </footer>
+                    </section>
                 </section>
             </article>
+
         </section>
 
-        <section class="horisontal_field">
+        <footer class="horisontal_field">
             <section>
                 <section class="hor_fld_right_algn">
                     <div class="float_left">Country:</div>
-                    <select name="country" id="select_country" class="float_left">
+                    <select name="select_country" id="select_country" class="float_left">
                         <option value="USA">USA</option>
                         <option value="CAN">Canada</option>
                         <option value="GB">United Kingdom</option>
@@ -125,14 +270,15 @@
                         <option value="NZ">New Zeland</option>
                         <option value="MEX">Mexico</option>
                     </select>
-                    <div class="orangeball">→</div>
+                    <!-- <div class="orangeball">→</div> -->
+                    <input type="button" name="recieve_news_button" value="→" class="orangeball">
                 </section>
                 <section class="hor_fld_right_algn">
                     <div class="float_left">Recieve the latest news on our products, research and promotions:</div>
                     <input type="email" name="email" class="float_left" placeholder="Enter email address">
                 </section>
             </section>
-        </section>
+        </footer>
 
     </main>
 
