@@ -409,7 +409,7 @@ article {
 }
 
 .thumbnails_list {
-    width: 298px;
+    width: 297px;
     overflow: hidden;
 }
 
@@ -424,11 +424,11 @@ article {
 }
 
 .thumbnails_list>section {
-    width: 270px;
+    width: 266px;
 }
 
 .thumbnails_list>section>div {
-    padding: 16px 0px 0px 3px;
+    padding: 16px 0px 0px 2px;
 }
 
 .thumbnails_list>section input {
