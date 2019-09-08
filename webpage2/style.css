@@ -287,7 +287,12 @@ aside>footer {
     margin-top: 8px;
 }
 
-aside>footer:hover, aside>section>div:hover {
+aside>footer a {
+    margin-right: 9px;
+}
+
+/* aside>footer:hover,  */
+aside>section>div:hover {
     background-color: #d5e4f1;
     cursor: pointer;
 }
@@ -421,6 +426,7 @@ article {
     height: 72px;
     font-size: 14px;
     background-color: #ffffff;
+    color: #666666;
 }
 
 .thumbnails_list>section {
@@ -494,6 +500,8 @@ article {
 
 .product_main_right>footer>div:first-child {
     padding-left: 0px;
+    padding-top: 0px;
+    cursor: pointer;
 }
 
 .rating_number:first-child{
@@ -635,6 +643,11 @@ body>footer div {
     padding-top: 1px;
     padding-bottom: 1px;
     border-color: #606060;
+}
+
+body>footer>a {
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .estimates_blocks, .estimates_stars { 
