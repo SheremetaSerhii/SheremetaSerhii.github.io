@@ -195,8 +195,11 @@ body>header>section {
 }
 
 .orangeball {
-    padding: 0px 3px 0px 3px;
-    width: 9px;
+    /* padding: 0px 3px 0px 3px; */
+    /* width: 9px; */
+    /* height: 15px; */
+    padding-left: 3px;
+    width: 12px;
     height: 15px;
     margin-right: 6px;
     margin-left: 6px;
@@ -211,9 +214,11 @@ body>header>section {
 }
 
 .orangeball[orangeball="smaller_font"] {
-    padding-top:  2px;
+    padding-top: 2px;
+    padding-left: 4px;
+    width: 11px;
     height: 13px;
-    font-size: 13px;
+    font-size: 13px; 
 }
 
 .orangeball[type="button"],
