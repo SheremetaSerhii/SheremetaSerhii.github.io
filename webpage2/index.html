@@ -26,7 +26,7 @@
         </section>
         <section id="h_signup">
             <div>
-                <h4>Looking for More Sleep Number Info?</h4>
+                <header>Looking for More Sleep Number Info?</header>
                 <p>Sign up tp receive our DVD, email news and deals. New Customer?
                     <span class="red_color">Get $50 in savings.</span></p>
                 <div>
@@ -38,7 +38,6 @@
         <section id="h_shopping">
             <div>
                 <div>
-                    <!-- <span class="orangeball">1</span> -->
                     <div class="orangeball float_left" orangeball="smaller_font">1</div>
                     <span>SHOP ONLINE</span>
                     <div id="h_shopping_cart">
@@ -49,7 +48,6 @@
                     <p>1-888-411-2188</p>
                 </div>
                 <div>
-                    <!-- <span class="orangeball">3</span> -->
                     <div class="orangeball float_left" orangeball="smaller_font">3</div>
                     <span>FIND OUR STORES</span>
                     <input type="text" name="zip_code" id="zip_code" placeholder="Enter Zip">
@@ -68,7 +66,6 @@
             <section>
                 <div class="float_left">Search Site</div>
                 <input type="text" name="search" class="float_left">
-                <!-- <div class="orangeball">→</div> -->
                 <input type="button" name="search_site_button" value="→" class="orangeball">
                 <section class="hor_fld_right_algn links_line_h">
                     <div><a href="#1">Bed Owners</a></div>
@@ -85,57 +82,72 @@
                     <header>BUY</header>
                     <!-- ↓→ -->
                     <div>
-                        <div class="orangeball float_left">→</div><p>Sleep Number Beds</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Sleep Number Beds</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Specialty Beds</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Specialty Beds</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Pillows & Bedding</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Pillows & Bedding</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Outlet</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Outlet</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Bed Specials</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Bed Specials</p>
                     </div>
                 </section>
                 <section>
                     <header>LEARN</header>
                     <div>
-                        <div class="orangeball float_left">→</div><p>What Is Sleep Number?</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>What Is Sleep Number?</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Sleep Number Research</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Sleep Number Research</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Sleep Number Reviews</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Sleep Number Reviews</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Compare Our Beds</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Compare Our Beds</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Compare Our Bases</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Compare Our Bases</p>
                     </div>
                 </section>
                 <section>
                     <header>TRY</header>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Find My Sleep Number</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Find My Sleep Number</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>How Sleep Number Works</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>How Sleep Number Works</p>
                     </div>
                     <div>
-                        <div class="orangeball float_left">→</div><p>Visit A Sleep Number Store</p>
+                        <div class="orangeball float_left">→</div>
+                        <p>Visit A Sleep Number Store</p>
                     </div>
                 </section>
                 <footer>
-                    <div class="orangeball float_left">→</div><p>Connect with Us</p>
+                    <div class="orangeball float_left">→</div>
+                    <p>Connect with Us</p>
                 </footer>
             </aside>
 
             <article>
+
                 <section id="product_main">
                     <header>
                         <a href='#'>🖨️Printer Friendly</a>
@@ -143,10 +155,10 @@
                     </header>
                     <section>
                         <!-- LEFT SIDE -->
-                        <section id="product_main_left">
-                            <header>
-                                <input type="button" name="photo_tab" value="Photo">
-                                <input type="button" name="video_tab" value="Video">
+                        <section id="product_main_left" class="product_main_left float_left">
+                            <header class="tab_controller">
+                                <input type="button" name="photo_tab" value="Photo" active_tab="1">
+                                <input type="button" name="video_tab" value="Video" active_tab="0">
                             </header>
                             <section>
                                 <img src="resources/product.png" width="100%" alt="product_preview">
@@ -162,7 +174,7 @@
                                     </section>
                                     <input type="button" name="go_to_next_thumb" value="►" class="float_right">
                                 </section>
-                                <section class="image_view_control float_left">
+                                <section class="image_view_control float_right">
                                     <input type="button" name="zoom" value=" ">
                                     <br>
                                     <input type="button" name="enlarge" value=" ">
@@ -170,123 +182,182 @@
                             </nav>
                         </section>
                         <!-- RIGHT SIDE -->
-                        <section id="product_main_right">
+                        <section id="product_main_right" class="product_main_right float_left">
                             <div class="rating">
-                                <span>RATING:</span>
-                                <img src="none" id="star1">
-                                <img src="none" id="star2">
-                                <img src="none" id="star3">
-                                <img src="none" id="star4">
-                                <img src="none" id="star5">
-                                <span id="item_rating">
-                                    <span class="rating_number">4.7</span>
-                                    out of
-                                    <span class="rating_number">5</span>
+                                <span class="float_left">RATING:</span>
+                                <!-- <img src="resources/empty.png" id="star1">
+                                <img src="resources/empty.png" id="star2">
+                                <img src="resources/empty.png" id="star3">
+                                <img src="resources/empty.png" id="star4">
+                                <img src="resources/empty.png" id="star5"> -->
+                                <div class="pic_star float_left" pic_val="10"></div>
+                                <div class="pic_star float_left" pic_val="10"></div>
+                                <div class="pic_star float_left" pic_val="10"></div>
+                                <div class="pic_star float_left" pic_val="10"></div>
+                                <div class="pic_star float_left" pic_val="07"></div>
+                                <span id="item_rating" class="float_right">
+                                    <b>4.7</b> out of <b>5</b>
                                 </span>
                             </div>
-                            <div class="links_line_h reviews_links">
+                            <div class="links_line_h reviews_links float_right">
                                 <div><a href="#">Read all 32 reviews</a></div>
                                 <div><a href="#">Write a review</a></div>
                             </div>
                             <br>
-                            <div>
-                                <div>
+                            <div class="product_options">
+                                <div class="float_left">
                                     SIZE: <a href="#">View Size Chart »</a>
+                                    <br>
+                                    <select name="selected_size" id="selected_size">
+                                        <option value="0">Queen</option>
+                                        <option value="1">King</option>
+                                        <option value="2">Joker</option>
+                                    </select>
                                 </div>
-                                <div>
+                                <div class="float_right">
                                     BASE: <a href="#"> (Recommended) </a>
+                                    <br>
+                                    <select name="selected_base" id="selected_base">
+                                        <option value="-1">Select a base</option>
+                                        <option value="0">Base #1</option>
+                                        <option value="1">Base #2</option>
+                                    </select>
                                 </div>
                                 <div>
                                     <a href="#"> MATTRESS PROTECTION </a>
+                                    <br>
+                                    <select name="selected_protection" id="selected_protection">
+                                        <option value="-1">Select a protection</option>
+                                        <option value="0">Protection #1</option>
+                                        <option value="1">Protection #2</option>
+                                    </select>
                                 </div>
                             </div>
                             <div>
                                 <input type="button" name="add_to_cart" id="add_to_cart" value="ADD BED TO CART"
                                     class="orandebutton">
                             </div>
-                            <div>
-                                SHARE EMAIL A FRIEND
-                            </div>
+                            <footer class="links_line_h">
+                                <div>SHARE</div>
+                                <div>EMAIL A FRIEND</div>
+                            </footer>
                         </section>
                     </section>
                 </section>
+
                 <section id="product_additionaly">
-                    <header>
-                        <input type="button" name="details" value="Bed Details">
-                        <input type="button" name="base_options" value="Base Options">
-                        <input type="button" name="reviews" value="Reviews">
+                    <header class="tab_controller">
+                        <div>
+                            <input type="button" name="details" value="Bed Details" active_tab="0">
+                            <input type="button" name="base_options" value="Base Options" active_tab="0">
+                            <input type="button" name="reviews" value="Reviews" active_tab="1">
+                        </div>
                     </header>
-                    <section>
+                    <section class="tab_page" tab_page_number="2">
                         <header>
                             <a href="#">Printable Reviews</a>
-                            <div>
+                            <br>
+                            <div class="float_right">
                                 <span>Review This Product</span>
                                 <select name="sort_order" id="sort_order">
-                                    <option value="1">Choose a sort order</option>
+                                    <option value="-1">Choose a sort order</option>
                                     <option value="1">Newest First</option>
                                     <option value="0">Latest First</option>
                                 </select>
                             </div>
                         </header>
                         <section>
-                            <div>
+                            <!-- LEFT -->
+                            <div class="product_additionaly_left float_left">
                                 <!-- UPPER LEFT -->
-                                <div>
-                                    <div>
-                                        <div>Overall:</div>
-                                        <img src="none" id="overall_1">
-                                        <img src="none" id="overall_2">
-                                        <img src="none" id="overall_3">
-                                        <img src="none" id="overall_4">
-                                        <img src="none" id="overall_5">
+                                <section class="estimation_list">
+                                    <div class="estimation">
+                                        <div class="estimation_caption float_left">Overall:</div>
+                                        <div class="estimates_stars float_left" pic_val="5"></div>
                                     </div>
-                                    <div>
-                                        <div>Comfort:</div>
-                                        <img src="none" id="comfort_1">
-                                        <img src="none" id="comfort_2">
-                                        <img src="none" id="comfort_3">
-                                        <img src="none" id="comfort_4">
-                                        <img src="none" id="comfort_5">
+                                    <div class="estimation">
+                                        <div class="estimation_caption float_left">Comfort:</div>
+                                        <div class="estimates_blocks float_left" pic_val="5"></div>
                                     </div>
-                                    <div>
-                                        <div>Quality:</div>
-                                        <img src="none" id="quality_1">
-                                        <img src="none" id="quality_2">
-                                        <img src="none" id="quality_3">
-                                        <img src="none" id="quality_4">
-                                        <img src="none" id="quality_5">
+                                    <div class="estimation">
+                                        <div class="estimation_caption float_left">Quality:</div>
+                                        <div class="estimates_blocks float_left" pic_val="5"></div>
                                     </div>
-                                    <div>
-                                        <div>Value:</div>
-                                        <img src="none" id="value_1">
-                                        <img src="none" id="value_2">
-                                        <img src="none" id="value_3">
-                                        <img src="none" id="value_4">
-                                        <img src="none" id="value_5">
+                                    <div class="estimation">
+                                        <div class="estimation_caption float_left">Value:</div>
+                                        <div class="estimates_blocks float_left" pic_val="4"></div>
                                     </div>
-                                </div>
+                                </section>
+                                <br>
                                 <!-- DOWN LEFT -->
-                                <div>
+                                <footer>
                                     <p>High Desert Sleeper</p>
-                                    <p><span>Location:</span> Santa Fe, Nm</p>
-                                </div>
+                                    <p><span pa_font_weight="0">Location:</span> Santa Fe, Nm</p>
+                                </footer>
 
                             </div>
                             <!-- RIGHT -->
-                            <div>
-
+                            <div class="product_additionaly_right  float_left">
+                                <div class="featured_review_marker float_left">
+                                    <img src="resources/featured_review_mark.png" class="float_left">
+                                    <div class="float_left">
+                                        <p><b>FEATURED REVIEW</b></p>
+                                    </div>
+                                </div>
+                                <br>
+                                <br>
+                                <div class="float_right">
+                                    <p><b>Date: November 9, 2007</b></p>
+                                </div>
+                                <br>
+                                <br>
+                                <div>
+                                    <p>
+                                        "I used to always watch TV in my bedroom until I got this bed. Now, as soon as I
+                                        get into this remarkable bed, I can't keep my eyes open but for about 10
+                                        minutes. I have to set the sleep timer on the TV or it stays on all
+                                        night...it's happened many times. So, if you buy this bed (and you won't regret
+                                        even its expensiveness) be prepared for a GREAT night's sleep! I can't say
+                                        enough good about this bed, but be sure you get their BEST! Trust me, you may
+                                        want to buy the less expensive models, but don't do it. Trust your instincts and
+                                        go FIRST CLASS!"
+                                    </p>
+                                </div>
+                                <br>
+                                <div>
+                                    <p>
+                                        <b>247</b> of <b>277</b>
+                                        people found this review helpfull.
+                                    </p>
+                                </div>
+                                <br>
+                                <div>
+                                    <i>
+                                        <p>
+                                            Was this review helpful to you?
+                                            <a href="#"><b>Yes</b></a>
+                                            <a href="#"><b>No</b></a>
+                                            <a href="#">(Report Inappropriate Review)</a>
+                                        </p>
+                                        <p>Vote recorded. Vote may take up to 12 hours to display.</p>
+                                    </i>
+                                </div>
                             </div>
                         </section>
                         <footer>
-                            <div>
+                            <div class="previous_page">
+                                <a href="#">Previous Page</a>
+                            </div>
+                            <div class="page_number">
                                 <p>1-4 of 32</p>
                             </div>
-                            <div>
-                                <a href="#">Next Page</a>
+                            <div class="next_page">
+                                <a href="#" class="float_right">Next Page</a>
                             </div>
                         </footer>
                     </section>
                 </section>
+
             </article>
 
         </section>
@@ -303,7 +374,6 @@
                         <option value="NZ">New Zeland</option>
                         <option value="MEX">Mexico</option>
                     </select>
-                    <!-- <div class="orangeball">→</div> -->
                     <input type="button" name="recieve_news_button" value="→" class="orangeball">
                 </section>
                 <section class="hor_fld_right_algn">
