@@ -66,6 +66,15 @@ body>header>section {
 
 #h_signup>div>div {
     margin-top: 5px;
+    cursor: pointer;
+}
+
+#h_signup input[name="sign_up_button"] {
+    margin-top: 2px;
+}
+
+#h_signup>div>div:hover input[name="sign_up_button"] {
+    background-color: #fcb111;
 }
 
 #h_signup a {
@@ -73,6 +82,10 @@ body>header>section {
     text-decoration: none;
     font-weight: bold;
     font-size: 12px;
+}
+
+#h_signup>div>div:hover a {
+    color: #fcb111;
 }
 
 .red_color {
@@ -87,7 +100,7 @@ body>header>section {
 }
 
 #h_shopping>div {
-    margin-left: 14px;
+    margin-left: 11px;
     margin-top: 23px;
 }
 
@@ -183,6 +196,8 @@ body>header>section {
 
 .orangeball {
     padding: 0px 3px 0px 3px;
+    width: 9px;
+    height: 15px;
     margin-right: 6px;
     margin-left: 6px;
     background-color: #f99b09;
@@ -193,6 +208,19 @@ body>header>section {
     border-radius: 20px;
     /* float: left; */
     border-style: hidden;
+}
+
+.orangeball[orangeball="smaller_font"] {
+    padding-top:  2px;
+    height: 13px;
+    font-size: 13px;
+}
+
+.orangeball[type="button"],
+.orangeball[type="submit"] {
+    padding: 0px;
+    width: 15px;
+    height: 15px;
 }
 
 .orandebutton {
@@ -240,8 +268,12 @@ aside p {
     padding: 6px 10px 6px 0px;
 }
 
-aside>section p {
+aside>section>div {
     border-top: 1px solid #dbdbdb;
+}
+
+aside .orangeball {
+    margin-top: 5px;
 }
 
 aside>section>header {
