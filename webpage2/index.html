@@ -15,7 +15,7 @@
 <body>
 
     <header>
-        <section id="h_logo">
+        <section class="h_logo">
             <img src="resources/logo.png" alt="sleep number logo">
             <div>
                 <p>400 STORES</p>
@@ -24,39 +24,39 @@
                 <p>NATIONWIDE!</p>
             </div>
         </section>
-        <section id="h_signup">
-            <div>
-                <header>Looking for More Sleep Number Info?</header>
+        <section class="h_signup">
+            <section>
+                <h1>Looking for More Sleep Number Info?</h1>
                 <p>Sign up tp receive our DVD, email news and deals. New Customer?
                     <span class="red_color">Get $50 in savings.</span></p>
                 <div>
                     <input type="button" name="sign_up_button" value="→" class="orangeball float_left">
                     <a href="#">SING-UP NOW!</a>
                 </div>
-            </div>
+            </section>
         </section>
-        <section id="h_shopping">
+        <section class="h_shopping">
             <div>
                 <div>
-                    <div class="orangeball float_left" orangeball="smaller_font">1</div>
+                    <div class="orangeball float_left" data-orangeball="smaller_font">1</div>
                     <span>SHOP ONLINE</span>
-                    <div id="h_shopping_cart">
+                    <div class="h_shopping_cart">
                         <a href="#">🛒Cart(0)</a>
                     </div>
                 </div>
-                <div id="h_shopping_number">
+                <div class="h_shopping_number">
                     <p>1-888-411-2188</p>
                 </div>
                 <div>
-                    <div class="orangeball float_left" orangeball="smaller_font">3</div>
+                    <div class="orangeball float_left" data-orangeball="smaller_font">3</div>
                     <span>FIND OUR STORES</span>
-                    <input type="text" name="zip_code" id="zip_code" placeholder="Enter Zip">
+                    <input type="text" name="zip_code" class="zip_code" placeholder="Enter Zip">
                     <input type="submit" name="submit_zip_code" value="→" class="orangeball">
                 </div>
             </div>
         </section>
-        <section id="h_image">
-            <img src="resources/shop.png" width="100%" alt="sleep number shop image">
+        <section class="h_image">
+            <img src="resources/shop.png" alt="sleep number shop image">
         </section>
     </header>
 
@@ -75,7 +75,7 @@
             </section>
         </header>
 
-        <section id="main_content">
+        <section class="main_content">
 
             <aside>
                 <section>
@@ -144,17 +144,17 @@
                     <div class="orangeball float_left">→</div>
                     <p class="float_left">Connect with Us</p>
                     <a href="https://www.facebook.com" target="_blank" class="float_left">
-                        <img src="resources/outer_resources/facebook.png">
+                        <img src="resources/outer_resources/facebook.png" alt="facebook">
                     </a>
                     <a href="https://twitter.com" target="_blank" class="float_left">
-                        <img src="resources/outer_resources/twitter.png">
+                        <img src="resources/outer_resources/twitter.png" alt="twitter">
                     </a>
                 </footer>
             </aside>
 
             <article>
 
-                <section id="product_main">
+                <section class="product_main">
                     <header>
                         <a href='#'>🖨️Printer Friendly</a>
                         <h1>i10 Sleep Number bed</h1>
@@ -163,11 +163,11 @@
                         <!-- LEFT SIDE -->
                         <section id="product_main_left" class="product_main_left float_left">
                             <header class="tab_controller">
-                                <input type="button" name="photo_tab" value="Photo" active_tab="1">
-                                <input type="button" name="video_tab" value="Video" active_tab="0">
+                                <input type="button" name="photo_tab" value="Photo" data-active_tab="1">
+                                <input type="button" name="video_tab" value="Video" data-active_tab="0">
                             </header>
                             <section>
-                                <img src="resources/product.png" width="100%" alt="product_preview">
+                                <img src="resources/product.png" alt="product_preview">
                             </section>
                             <nav>
                                 <section class="thumbnails_list float_left">
@@ -191,11 +191,11 @@
                         <section id="product_main_right" class="product_main_right float_left">
                             <div class="rating">
                                 <span class="float_left">RATING:</span>
-                                <div class="pic_star float_left" pic_val="10"></div>
-                                <div class="pic_star float_left" pic_val="10"></div>
-                                <div class="pic_star float_left" pic_val="10"></div>
-                                <div class="pic_star float_left" pic_val="10"></div>
-                                <div class="pic_star float_left" pic_val="07"></div>
+                                <div class="pic_star float_left" data-pic_val="10"></div>
+                                <div class="pic_star float_left" data-pic_val="10"></div>
+                                <div class="pic_star float_left" data-pic_val="10"></div>
+                                <div class="pic_star float_left" data-pic_val="10"></div>
+                                <div class="pic_star float_left" data-pic_val="07"></div>
                                 <span id="item_rating" class="float_right">
                                     <b>4.7</b> out of <b>5</b>
                                 </span>
@@ -239,22 +239,22 @@
                                     class="orandebutton">
                             </div>
                             <footer class="links_line_h">
-                                <div><a href="#"><img src="resources/outer_resources/share.png"></a></div>
+                                <div><a href="#"><img src="resources/outer_resources/share.png" alt="share"></a></div>
                                 <div>EMAIL A FRIEND</div>
                             </footer>
                         </section>
                     </section>
                 </section>
 
-                <section id="product_additionaly">
+                <section class="product_additionaly">
                     <header class="tab_controller">
                         <div>
-                            <input type="button" name="details" value="Bed Details" active_tab="0">
-                            <input type="button" name="base_options" value="Base Options" active_tab="0">
-                            <input type="button" name="reviews" value="Reviews" active_tab="1">
+                            <input type="button" name="details" value="Bed Details" data-active_tab="0">
+                            <input type="button" name="base_options" value="Base Options" data-active_tab="0">
+                            <input type="button" name="reviews" value="Reviews" data-active_tab="1">
                         </div>
                     </header>
-                    <section class="tab_page" tab_page_number="2">
+                    <section class="tab_page">
                         <header>
                             <a href="#">Printable Reviews</a>
                             <br>
@@ -273,34 +273,34 @@
                                 <!-- UPPER LEFT -->
                                 <section class="estimation_list">
                                     <div class="estimation">
-                                        <div class="estimation_caption float_left">Overall:</div>
-                                        <div class="estimates_stars float_left" pic_val="5"></div>
+                                        <div class="estimation_caption float_left"><b>Overall:</b></div>
+                                        <div class="estimates_stars float_left" data-pic_val="5"></div>
                                     </div>
                                     <div class="estimation">
-                                        <div class="estimation_caption float_left">Comfort:</div>
-                                        <div class="estimates_blocks float_left" pic_val="5"></div>
+                                        <div class="estimation_caption float_left"><b>Comfort:</b></div>
+                                        <div class="estimates_blocks float_left" data-pic_val="5"></div>
                                     </div>
                                     <div class="estimation">
-                                        <div class="estimation_caption float_left">Quality:</div>
-                                        <div class="estimates_blocks float_left" pic_val="5"></div>
+                                        <div class="estimation_caption float_left"><b>Quality:</b></div>
+                                        <div class="estimates_blocks float_left" data-pic_val="5"></div>
                                     </div>
                                     <div class="estimation">
-                                        <div class="estimation_caption float_left">Value:</div>
-                                        <div class="estimates_blocks float_left" pic_val="4"></div>
+                                        <div class="estimation_caption float_left"><b>Value:</b></div>
+                                        <div class="estimates_blocks float_left" data-pic_val="4"></div>
                                     </div>
                                 </section>
                                 <br>
                                 <!-- DOWN LEFT -->
                                 <footer>
-                                    <p>High Desert Sleeper</p>
-                                    <p><span pa_font_weight="0">Location:</span> Santa Fe, Nm</p>
+                                    <p><b>High Desert Sleeper</b></p>
+                                    <p>Location: <b>Santa Fe, Nm</b></p>
                                 </footer>
-
                             </div>
                             <!-- RIGHT -->
                             <div class="product_additionaly_right  float_left">
                                 <div class="featured_review_marker float_left">
-                                    <img src="resources/featured_review_mark.png" class="float_left">
+                                    <img src="resources/featured_review_mark.png" class="float_left"
+                                        alt="featured review">
                                     <div class="float_left">
                                         <p><b>FEATURED REVIEW</b></p>
                                     </div>
@@ -333,15 +333,13 @@
                                 </div>
                                 <br>
                                 <div>
-                                    <i>
-                                        <p>
-                                            Was this review helpful to you?
-                                            <a href="#"><b>Yes</b></a>
-                                            <a href="#"><b>No</b></a>
-                                            <a href="#">(Report Inappropriate Review)</a>
-                                        </p>
-                                        <p>Vote recorded. Vote may take up to 12 hours to display.</p>
-                                    </i>
+                                    <p>
+                                        <i>Was this review helpful to you?</i>
+                                        <a href="#"><b><i>Yes</i></b></a>
+                                        <a href="#"><b><i>No</i></b></a>
+                                        <a href="#">(Report Inappropriate Review)</a>
+                                    </p>
+                                    <p><i>Vote recorded. Vote may take up to 12 hours to display.</i></p>
                                 </div>
                             </div>
                         </section>
