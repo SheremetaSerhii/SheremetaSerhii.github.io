@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* width: 1000px; */
+    width: 50%;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+nav {
+    top: 0px;
+    left: 0px;
+    height: 50px;
+    width: 100%;
+    background-color: #da56ae;
+    position: fixed;
+}
+
+header {
+    margin-top: 50px;
+    height: 100px;
+    background-color: #5d83c9;
+}
+
+section {
+    width: 60%;
+    height: 300px;
+    float: left;
+    background-color: green;
+}
+
+aside {
+    width: 40%;
+    height: 300px;
+    float: left;
+    background-color: lightgreen;
+}
+
+footer {
+    background-color: blanchedalmond;
+}

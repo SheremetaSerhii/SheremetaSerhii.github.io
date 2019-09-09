@@ -1,0 +1,58 @@
+h1 {
+    font-size: 2em;
+}
+
+div {
+    width: 100px;
+    height: 100px;
+    border: 2px solid red;
+    text-align: center;
+}
+
+section {
+    margin: auto;
+    width: 500px;
+    height: 500px;
+    position: relative;
+    background-color: steelblue;
+    display: flex;
+    /* flex-direction: row-reverse; */
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+section > :nth-child(2n){
+    background-color: black;
+    color: white;
+}
+
+section > :nth-child(2n+1){
+    background-color: white;
+}
+
+#a {
+    /* order: 3; */
+    width: 200px;
+    height: 200px;
+}
+
+/* #b {
+    order: 1;
+}
+
+#c {
+    order: 5;
+}
+
+#d {
+    order: 4;
+}
+
+#e {
+    order: 2;
+}
+
+#f {
+    order: 6;
+} */
