@@ -1,0 +1,25 @@
+main {
+    position: relative;
+    width: 600px;
+    height: 650px;
+    background-color: black;
+    margin: 0 auto;
+}
+
+input[type="button"] {
+    position: relative;
+    width: 200px;
+    height: 50px;
+    font-family: 'lucida console';
+    font-size: 20px;
+    cursor: pointer;
+    left: 200px;
+    top: 550px;
+}
+
+section {
+    position: absolute;
+    display: none;
+    cursor: move;
+    /* background-color: #d61010; */
+}
