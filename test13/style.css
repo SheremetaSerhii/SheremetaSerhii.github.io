@@ -1,0 +1,40 @@
+/* section {
+    color: red;
+    font-size: 2em;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+} */
+
+*{
+    font-size: 20px;
+}
+
+section {
+    display: table;
+    margin: 0 auto;
+}
+
+.row {
+    display: table-row;
+}
+
+.cell {
+    display: table-cell;
+    border: 1px solid black;
+    /* padding: 4px; */
+    width: 40px;
+    height: 40px;
+}
+
+.cell-main {
+    background-color: rgb(189, 189, 69);
+}
+
+.cell-omain {
+    background-color: lightblue;
+}
+
+.cell-umain {
+    background-color: rgb(149, 218, 149);
+}
