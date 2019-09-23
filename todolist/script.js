@@ -2,7 +2,9 @@ var btn = document.getElementById("btnAdd");
 var allTasks = [];
 
 btn.addEventListener("click", function() {
+
     var taskVal = task.value;
+    
     if (!allTasks.includes(taskVal)) {    
         var newLi = document.createElement("li");
         newLi.innerText = taskVal;
@@ -24,4 +26,5 @@ btn.addEventListener("click", function() {
             e.target.remove();
         }, false);
     }
+
 }, false);
