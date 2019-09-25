@@ -88,11 +88,12 @@ li {
 input[type="button"] {
     cursor: pointer;
     margin: 0px;
+    padding: 1px 8px 1px 8px;
 }
 
 textarea {
-    min-width: 87%;
-    max-width: 87%;
+    min-width: 85.5%;
+    max-width: 85.5%;
     height: 100px;
     min-height: 100px;
     max-height: 250px;
@@ -113,5 +114,5 @@ footer {
 }
 
 #btnAdd {
-    width: 12%;
+    width: 14.5%;
 }
