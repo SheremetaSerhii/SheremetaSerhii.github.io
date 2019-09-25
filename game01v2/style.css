@@ -1,0 +1,39 @@
+*{
+    font-family: 'lucida console';
+}
+
+main {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    height: 650px;
+    background-color: black;
+    margin: 0 auto;
+}
+
+p {
+    margin: 0px;
+    font-size: 90px;
+    color: #ecc40f;
+    cursor: default;
+}
+
+input[type="button"] {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    left: 200px;
+    top: 550px;
+}
+
+section {
+    position: absolute;
+    display: none;
+    cursor: move;
+    border-color: #e4b83e;
+    border-width: 2px;
+}

@@ -1,4 +1,117 @@
-.done {
-    text-decoration:line-through;
-    color: gray;
+* {
+    font-family: Verdana;
+    font-size: 20px;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+    color: lightsalmon;
+}
+
+ul {
+    width: auto;
+    min-height: 200px;
+    max-height: 800px;
+    max-width: 880px;
+    border: 1px solid brown;
+    background-color: ivory;
+    overflow-y: auto;
+    color: brown;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    clear: both;
+    display: inline-block;
+}
+
+ul > :nth-child(2n) {
+    background-color: antiquewhite;
+}
+
+ul > :nth-child(n) :hover {
+    background-color: palegoldenrod;
+}
+
+.selected, 
+ul > :nth-child(2n).selected {
+    background-color: lightblue;
+}
+
+ul > :nth-child(2n).selected :hover, 
+ul > :nth-child(2n+1).selected :hover {
+    background-color: skyblue;
+}
+
+#task {
+    width: 500px;
+}
+
+html, body {
+    min-height: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+main {
+    margin: 0 auto;
+    width: 880px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+li {
+    clear: both;
+    width: 100%;
+    height: auto;
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.liText {
+    float: left;
+    margin: 0px;
+    width: 96%;
+    background-color: inherit;
+    text-decoration: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.liButton {
+    float: right;
+    height: 100%;
+    font-size: 16px;
+    width: 4%;
+}
+
+input[type="button"] {
+    cursor: pointer;
+    margin: 0px;
+}
+
+textarea {
+    min-width: 87%;
+    max-width: 87%;
+    height: 100px;
+    min-height: 100px;
+    max-height: 250px;
+}
+
+header, footer {
+    display: flex;
+}
+
+header {
+    margin-top: 8px;
+}
+
+footer {
+    margin-bottom: 8px;
+    justify-content: space-between;
+    height: 40px;
+}
+
+#btnAdd {
+    width: 12%;
 }

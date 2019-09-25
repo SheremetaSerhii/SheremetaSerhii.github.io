@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>To Do List</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
 </head>
+
 <body>
-    <input type="text" id="task">
-    <input type="button" id="btnAdd" value="Add">
-    <ul id="tasks"></ul>
+    <main>
+        <header>
+            <textarea name="task" id="task" placeholder="Enter new task here."></textarea>
+            <input type="button" id="btnAdd" value="Add task">
+        </header>
+        <ul id="tasksList"></ul>
+        <footer>
+            <section>
+                <input type="button" id="btnDown" value="↓">
+                <input type="button" id="btnUp" value="↑">
+            </section>
+            <section>
+                <input type="button" id="btnClearSelected" value="Clear Strikethrough">
+                <input type="button" id="btnClearAll" value="Clear All">
+            </section>
+        </footer>
+    </main>
     <script src="script.js"></script>
 </body>
+
 </html>
