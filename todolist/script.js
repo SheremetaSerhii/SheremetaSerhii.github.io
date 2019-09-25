@@ -3,6 +3,14 @@ task.value = "";
 var allTasks = [];
 var selectedTask = null;
 
+function getStringWithNoSpaces(str) {
+    var result;
+    result = str.trim();
+    result = result.split(" ").join("");
+    result = result.split("\n").join("");
+    return result;
+};
+
 function getClass(curElement) {
     attr = curElement.getAttribute("class");
     result = (attr == null) ? "" : attr;
@@ -26,13 +34,13 @@ function changePlacesWithSelected(elementToMove) {
     var elementToMovePTag = elementToMove.getElementsByTagName("p")[0];
     var selectedTaskPTag = selectedTask.getElementsByTagName("p")[0];
     var tempText = elementToMovePTag.innerText;
-    var elementToMoveIndex = allTasks.indexOf(tempText);
-    var selectedTaskIndex = allTasks.indexOf(selectedTaskPTag.innerText);
+    var elementToMoveIndex = allTasks.indexOf(getStringWithNoSpaces(tempText));
+    var selectedTaskIndex = allTasks.indexOf(getStringWithNoSpaces(selectedTaskPTag.innerText));
 
     elementToMovePTag.innerText = selectedTaskPTag.innerText;
-    allTasks[elementToMoveIndex] = selectedTaskPTag.innerText;
+    allTasks[elementToMoveIndex] = getStringWithNoSpaces(selectedTaskPTag.innerText);
     selectedTaskPTag.innerText = tempText;
-    allTasks[selectedTaskIndex] = tempText;
+    allTasks[selectedTaskIndex] = getStringWithNoSpaces(tempText);
     setNewSelectedElement(elementToMove);
 
     return true;
@@ -41,7 +49,7 @@ function changePlacesWithSelected(elementToMove) {
 
 btnUp.addEventListener("click", function () {
     if (allTasks.length > 1 && selectedTask != null) {
-        var selectedTaskIndex = allTasks.indexOf(selectedTask.getElementsByTagName("p")[0].innerText);
+        var selectedTaskIndex = allTasks.indexOf(getStringWithNoSpaces(selectedTask.getElementsByTagName("p")[0].innerText));
         if (selectedTaskIndex > 0) {
             changePlacesWithSelected(tasksList.getElementsByTagName("li")[selectedTaskIndex - 1]);
         }
@@ -50,7 +58,7 @@ btnUp.addEventListener("click", function () {
 
 btnDown.addEventListener("click", function () {
     if (allTasks.length > 1 && selectedTask != null) {
-        var selectedTaskIndex = allTasks.indexOf(selectedTask.getElementsByTagName("p")[0].innerText);
+        var selectedTaskIndex = allTasks.indexOf(getStringWithNoSpaces(selectedTask.getElementsByTagName("p")[0].innerText));
         if (selectedTaskIndex < allTasks.length - 1) {
             changePlacesWithSelected(tasksList.getElementsByTagName("li")[selectedTaskIndex + 1]);
         }
@@ -74,7 +82,7 @@ btnAdd.addEventListener("click", function () {
             newLi.appendChild(newLiText);
             newLi.appendChild(newLiBtnRemove);
             tasksList.appendChild(newLi);
-            allTasks.push(taskVal);
+            allTasks.push(getStringWithNoSpaces(taskVal));
 
             newLi.addEventListener("click", function (e) {
                 var attribute = getClass(e.target);
@@ -104,7 +112,7 @@ btnAdd.addEventListener("click", function () {
 
             newLiBtnRemove.addEventListener("click", function (e) {
                 var parent = e.target.parentElement;
-                var index = allTasks.indexOf(parent.innerText);
+                var index = allTasks.indexOf(getStringWithNoSpaces(parent.innerText));
                 allTasks.splice(index, 1);
                 parent.remove();
                 e.stopPropagation;
@@ -113,12 +121,12 @@ btnAdd.addEventListener("click", function () {
             tasksList.scrollTop = tasksList.scrollHeight - tasksList.clientHeight;
         }
         else {
-            alert("This task alredy exists. \n Enter another task please.");
+            alert("This task alredy exists.\nEnter another task please.");
         }
         task.value = "";
     }
     else {
-        alert("Task is empty! \n Enter the task please.");
+        alert("Task is empty!\nEnter the task please.");
     }
 
     task.focus();
