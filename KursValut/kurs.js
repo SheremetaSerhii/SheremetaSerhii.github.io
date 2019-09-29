@@ -23,7 +23,7 @@ var chartData = {
         }
     },
     series: [{
-        name: '01',
+        name: '',
         data:[]
     }],
     responsive: {
