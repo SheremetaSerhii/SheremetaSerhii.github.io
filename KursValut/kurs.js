@@ -1,5 +1,41 @@
-//var todayDate = new Date();
-var XHR = [];
+const DD = 2, MM = 1, YY = 0;
+
+var chartData = {
+    title: {
+        text: 'NBU Currency'
+    },
+    xAxis: {
+        type: 'datetime'
+    },
+    yAxis: {
+        title: {
+            text: 'Exchange rate'
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+        }
+    },
+    series: [{
+        name: '01',
+        data:[]
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            }
+        }]
+    }
+}
+
+Highcharts.chart('chartContainer', chartData);
 
 function waitForResults() {
     this.daysCounter = 0;
@@ -11,13 +47,14 @@ function waitForResults() {
     var timerFunc = function () {
         if (curObj.daysCounter >= curObj.totalDaysQuantity) {
             clearInterval(curObj.timer);
+            curObj.timer = null;
             if (curObj.funcToRun != null) {
                 curObj.funcToRun();
             }
         }
     }
 
-    this.incDaysQuantity = function () {
+    this.incCounter = function () {
         curObj.daysCounter++;
     }
 
@@ -25,6 +62,9 @@ function waitForResults() {
         curObj.daysCounter = 0;
         curObj.totalDaysQuantity = daysQuantity;
         curObj.funcToRun = func;
+        if (curObj.timer != null) {
+            clearInterval(curObj.timer);
+        } 
         curObj.timer = setInterval(timerFunc, 100);
     }
 }
@@ -36,15 +76,14 @@ function transformDate(curDate) {
 }
 
 function getCurrencyForTheDay(index, currency, day) {
-    result = new XMLHttpRequest();
+    var result = new XMLHttpRequest();
     result.index = index;
     result.day = day;
-    result.currency = currency;
     result.addEventListener("readystatechange", function (e) {
         if ((e.target.readyState === 4) && (e.target.status === 200)) {
             var data = JSON.parse(e.target.responseText);
             e.target.currencyVal = (data.length > 0) ? data[0].rate.toFixed(2) : 0;
-            waitForResultsTimer.incDaysQuantity();
+            waitForResultsTimer.incCounter();
         }
     }, false);
     var currentDate = transformDate(day);
@@ -54,18 +93,21 @@ function getCurrencyForTheDay(index, currency, day) {
     return result;
 }
 
+function getDateArr(dateStr) {
+    var dateArr = dateStr.split("-");
+    dateArr = dateArr.map(function (item) {
+        return Number(item)
+    });
+    return dateArr;
+}
+
 function getNextDate(curDate) {
-    const DD = 2, MM = 1, YY = 0;
     const DAYS_IN_MONTH = [
         [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
         [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     ];
-    var dateArr = curDate.split("-");
-    dateArr = dateArr.map(function (item) {
-        return Number(item)
-    });
-    leapYear = Number((dateArr[YY] & 3) == 0);
-    //console.log(leapYear);
+    var dateArr = getDateArr(curDate);
+    var leapYear = Number((dateArr[YY] & 3) == 0);
     dateArr[DD]++;
     if (dateArr[DD] > DAYS_IN_MONTH[leapYear][dateArr[MM] - 1]) {
         dateArr[DD] = 1;
@@ -87,24 +129,26 @@ var endDate = document.getElementById("endDate");
 var currency = document.getElementById("currency");
 
 function changeEvent(e) {
-    XHR = [];
+    var XHR = [];
     var sdate = startDate.value;
     var edate = endDate.value;
     var crc = currency.value;
     if (!((sdate == "") || (edate == "") || (crc == ""))) {
-        //console.log(sdate, edate, crc);
         var finalDate = transformDate(edate);
         for (var i = 0, cdate = sdate; transformDate(cdate) <= finalDate; i++ , cdate = getNextDate(cdate)) {
             XHR[i] = getCurrencyForTheDay(i, crc, cdate);
-            console.log(i, cdate);
         }
-        console.log(i);
-        var timerFunc = function () {
+        var timerEndFunc = function () {
+            chartData.series[0].name = crc;
+            chartData.series[0].data = [];
             XHR.map(function (item) {
-                console.log(/*"final data = ",*/ item.index, item.day, item.currencyVal);
+                var dateArr = getDateArr(item.day);
+                var dateUTC = Date.UTC(dateArr[YY], dateArr[MM], dateArr[DD]);
+                chartData.series[0].data.push([dateUTC, Number(item.currencyVal)]);
             });
+            Highcharts.chart('chartContainer', chartData);
         }
-        waitForResultsTimer.startTimerForDaysQuantity(i, timerFunc);
+        waitForResultsTimer.startTimerForDaysQuantity(i, timerEndFunc);
     }
 }
 
