@@ -143,7 +143,7 @@ function changeEvent(e) {
             chartData.series[0].data = [];
             XHR.map(function (item) {
                 var dateArr = getDateArr(item.day);
-                var dateUTC = Date.UTC(dateArr[YY], dateArr[MM], dateArr[DD]);
+                var dateUTC = Date.UTC(dateArr[YY], dateArr[MM] - 1, dateArr[DD]);
                 chartData.series[0].data.push([dateUTC, Number(item.currencyVal)]);
             });
             Highcharts.chart('chartContainer', chartData);
