@@ -1,0 +1,22 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: rgb(202, 197, 180);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#timerCanvas {
+    background-color: rgb(117, 131, 105);
+}
+
+section {
+    width: 620px;
+    height: 170px;
+    margin: 0px;
+    border: 10px inset rgb(235, 229, 210);
+}
