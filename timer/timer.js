@@ -49,11 +49,12 @@ function drawNumber(num, x, y) {
 }
 
 function drawCurrentTime() {
+    ctx.clearRect(0, 0, 620, 170);
     var curDate = new Date();
     var x = drawNumber(curDate.getHours(), 12, 10);
     x = darwColon(x, 10);
     x = drawNumber(curDate.getMinutes(), x, 10);
-    x = darwColon(x, 10); 
+    x = darwColon(x, 10);
     drawNumber(curDate.getSeconds(), x, 10);
 }
 
