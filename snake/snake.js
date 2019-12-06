@@ -3,6 +3,13 @@ const
     DOWN = 1,
     LEFT = 2,
     UP = 3;
+const
+    GAME_SNAKE_ALIVE = 0;
+GAME_SNAKE_DEAD = 1;
+GAME_TRANSITION1 = 2;
+GAME_TRANSITION2 = 3;
+const MORTAL_SNAKE = true;
+const SPEED_DIVIDER = 3;
 //////////////// SCREEN CLASS ////////////////
 function gameScreenClass(canvasObj) {
 
@@ -32,6 +39,11 @@ function gameScreenClass(canvasObj) {
     //fill tile
     this.fillTile = function (x, y) {
         screenArr[x][y] = true;
+    }
+
+    //clear tile
+    this.clearTile = function (x, y) {
+        screenArr[x][y] = false;
     }
 
     //get tile
@@ -79,61 +91,78 @@ let snake = {
     segments: [],
     direction: RIGHT,
     timer: 0,
-    speed: 26
+    speed: 0,
+    steps: 0
 };
 let frog = {
     pos: [0, 0],
     state: true,
     timer: 0
 }
+let transition = 0;
+let game = GAME_TRANSITION1;
+let canReadKey = true;
 let gameScreen = new gameScreenClass(document.getElementById("mainCanvas"));
 gameScreen.draw();
 
 function drawSnake() {
+    gameScreen.clear();
     for (let i = 0; i < snake.segments.length; i++) {
         gameScreen.fillTile(snake.segments[i][0], snake.segments[i][1]);
     }
 }
 
 function createSnakeInPosition(pos) {
+    snake.segments = [];
     for (let i = 0; i < 3; i++) {
         snake.segments.push([pos[0] + i, pos[1]]);
     }
+    snake.direction = RIGHT;
     snake.timer = 0;
     snake.speed = 0;
+    snake.steps = 0;
     drawSnake();
 }
 
 function keyInput(event) {
-    if (event.defaultPrevented) {
-        return;
-    }
-    switch (event.code) {
-        case "ArrowRight":
-            if (snake.direction != LEFT) {
-                snake.direction = RIGHT;
-            }
-            break;
-        case "ArrowDown":
-            if (snake.direction != UP) {
-                snake.direction = DOWN;
-            }
-            break;
-        case "ArrowLeft":
-            if (snake.direction != RIGHT) {
-                snake.direction = LEFT;
-            }
-            break;
-        case "ArrowUp":
-            if (snake.direction != DOWN) {
-                snake.direction = UP;
-            }
-            break;
+    if (canReadKey) {
+
+        if (event.defaultPrevented) {
+            return;
+        }
+
+        switch (event.code) {
+            case "ArrowRight":
+                if (snake.direction != LEFT && snake.direction != RIGHT) {
+                    snake.direction = RIGHT;
+                    canReadKey = false;
+                }
+                break;
+            case "ArrowDown":
+                if (snake.direction != UP && snake.direction != DOWN) {
+                    snake.direction = DOWN;
+                    canReadKey = false;
+                }
+                break;
+            case "ArrowLeft":
+                if (snake.direction != LEFT && snake.direction != RIGHT) {
+                    snake.direction = LEFT;
+                    canReadKey = false;
+                }
+                break;
+            case "ArrowUp":
+                if (snake.direction != UP && snake.direction != DOWN) {
+                    snake.direction = UP;
+                    canReadKey = false;
+                }
+                break;
+        }
+
     }
 }
 
 function moveSnake() {
-    if (snake.timer >= 30 - snake.speed) {
+    if (snake.timer >= 30 - (snake.speed / SPEED_DIVIDER)) {
         snake.timer = 0;
         let tempArr = snake.segments[snake.segments.length - 1];
         let newPos = [tempArr[0], tempArr[1]];
@@ -146,19 +175,89 @@ function moveSnake() {
         else if (newPos[i] > j) {
             newPos[i] = 0;
         }
-        snake.segments.shift();
-        snake.segments.push(newPos);
+        if (!checkFrogEating(newPos)) {
+            if (checkSelfEating(newPos)) {
+                return false;
+            }
+            snake.steps++;
+            snake.segments.shift();
+            snake.segments.push(newPos);
+            canReadKey = true;
+        }
     }
     drawSnake();
     snake.timer++;
+    return true;
 }
 
-function eatFrog(pos) {
-    snake.segments.push(pos);
-    if (snake.speed < 26) {
-        snake.speed++;
+function snakeDying() {
+    transition++;
+    if (transition >= 5) {
+        transition = 0;
+        if (snake.segments.length > 0) {
+            snake.segments.pop();
+            drawSnake();
+            gameScreen.draw();
+        }
+        else {
+            transition = 0;
+            game = GAME_TRANSITION1;
+            gameScreen.clear();
+        }
     }
-    generateNewFrogPosition();
+}
+
+function gameTransition(t) {
+    if (transition < 60) {
+        for (let i = 0; i < 10; i++) {
+            if (t == GAME_TRANSITION1) {
+                gameScreen.fillTile(i, transition / 3);
+            }
+            else {
+                gameScreen.clearTile(i, transition / 3);
+            }
+        }
+        gameScreen.draw();
+        transition++;
+    }
+    else {
+        transition = 0;
+        if (t == GAME_TRANSITION1) {
+            game = GAME_TRANSITION2;
+        }
+        else {
+            startNewGame();
+        }
+
+    }
+}
+
+function checkFrogEating(pos) {
+    if (pos[0] == frog.pos[0] && pos[1] == frog.pos[1]) {
+        let newPos = [pos[0], pos[1]];
+        snake.segments.push(newPos);
+        canReadKey = true;
+        updateScore()
+        snake.steps = 0;
+        drawSnake();
+        if (snake.speed < 26 * SPEED_DIVIDER) {
+            snake.speed++;
+        }
+        generateNewFrogPosition();
+        return true;
+    }
+    return false;
+}
+
+function checkSelfEating(pos) {
+    if (MORTAL_SNAKE) {
+        if (gameScreen.getTile(pos[0], pos[1])) {
+            transition = 0;
+            game = GAME_SNAKE_DEAD;
+            return true;
+        }
+    }
+    return false;
 }
 
 function drawFrog() {
@@ -187,14 +286,48 @@ function generateNewFrogPosition() {
 }
 
 function gameUpdate() {
-    gameScreen.clear();
-    moveSnake();
-    drawFrog();
+    switch (game) {
+        case GAME_SNAKE_ALIVE:
+            if (!moveSnake()) {
+                return;
+            }
+            drawFrog();
+            gameScreen.draw();
+            break;
+        case GAME_SNAKE_DEAD:
+            snakeDying();
+            break;
+        case GAME_TRANSITION1:
+        case GAME_TRANSITION2:
+            gameTransition(game);
+            break;
+    }
+}
+
+function updateScore() {
+    let stepsBonus = 46 - snake.steps - (Math.floor(snake.steps / 3) * 2) - (Math.floor(snake.steps / 10) * 3) - (Math.floor(snake.steps / 15) * 4);
+    if (stepsBonus < 0) {
+        stepsBonus = 0;
+    }
+    let bonus = stepsBonus + Math.floor(snake.speed / 2.5) + 3;
+    //console.log(snake.steps, stepsBonus, bonus);
+    scoreVal += bonus;
+    if (hiScoreVal < scoreVal) {
+        hiScoreVal = scoreVal;
+    }
+    scoreObj.innerText = scoreVal;
+    hiScoreObj.innerText = hiScoreVal;
+}
+
+function startNewGame() {
+    game = GAME_SNAKE_ALIVE;
+    scoreVal = 0;
+    scoreObj.innerText = scoreVal;
+    createSnakeInPosition([3, 9]);
+    generateNewFrogPosition();
     gameScreen.draw();
 }
 
-createSnakeInPosition([3, 9]);
-generateNewFrogPosition();
-gameScreen.draw();
 document.addEventListener("keydown", keyInput, false);
+//startNewGame();
 setInterval(gameUpdate, 10);
