@@ -1,0 +1,41 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-color: rgb(202, 197, 180);
+    margin: 0px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#mainCanvas {
+    background-color: rgb(117, 131, 105);
+}
+
+section {
+    width: 326px;
+    height: 646px;
+    margin: 0px;
+    border: 10px inset rgb(235, 229, 210);
+}
+
+header {
+    width: 320px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-family: "Lucida Console";
+    font-size: 20px;
+    font-weight: bold;
+    color: darkslategray;
+}
