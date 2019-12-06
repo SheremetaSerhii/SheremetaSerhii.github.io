@@ -68,13 +68,6 @@ function gameScreenClass(canvasObj) {
     this.clear();
     if (canvasObj.getContext) {
         ctx = canvasObj.getContext("2d");
-        // temp
-        /*for (let y = 0; y < 20; y++) {
-            for (let x = 0; x < 10; x++) {
-                screenArr[x][y] = Math.floor(Math.random() * 10) == 0;
-            }
-        }*/
-        // temp
     }
     else {
         alert("Your browser does not support canvas.");
@@ -310,7 +303,6 @@ function updateScore() {
         stepsBonus = 0;
     }
     let bonus = stepsBonus + Math.floor(snake.speed / 2.5) + 3;
-    //console.log(snake.steps, stepsBonus, bonus);
     scoreVal += bonus;
     if (hiScoreVal < scoreVal) {
         hiScoreVal = scoreVal;
@@ -329,5 +321,4 @@ function startNewGame() {
 }
 
 document.addEventListener("keydown", keyInput, false);
-//startNewGame();
 setInterval(gameUpdate, 10);
