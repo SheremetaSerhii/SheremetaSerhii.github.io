@@ -4,10 +4,10 @@ const
     LEFT = 2,
     UP = 3;
 const
-    GAME_SNAKE_ALIVE = 0;
-GAME_SNAKE_DEAD = 1;
-GAME_TRANSITION1 = 2;
-GAME_TRANSITION2 = 3;
+    GAME_SNAKE_ALIVE = 0,
+    GAME_SNAKE_DEAD = 1,
+    GAME_TRANSITION1 = 2,
+    GAME_TRANSITION2 = 3;
 const MORTAL_SNAKE = true;
 const SPEED_DIVIDER = 3;
 //////////////// SCREEN CLASS ////////////////
