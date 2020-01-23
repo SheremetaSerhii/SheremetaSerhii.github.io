@@ -1,6 +1,6 @@
 "use strict"
 
-/*import { MovableElement } from "./element.js";
+import { MovableElement } from "./element.js";
 
 let camera = new MovableElement(160, 120, 0, 1);
 
@@ -20,7 +20,7 @@ for (let i = 0; i < IMAGE_NAMES.length; i++) {
     let img = new Image();
     img.src = IMAGE_NAMES[i];
     imagesArr.push(img);
-}*/
+}
 
 let ctx;
 let canvasObj = document.getElementById("mainCanvas");
@@ -32,10 +32,18 @@ else {
     alert("Your browser does not support canvas.");
 }
 
-let img = new Image();
-img.src = 'res/wall01.png';
-/*imagesArr[IMG_ARROW]*/
-ctx.drawImage(img, 0, 0);
+function draw() {
+    ctx.clearRect(0, 0, canvasObj.width, canvasObj.height);
+    camera.turnRight(1);
+    camera.moveForward();
+    let x, y;
+    [x, y] = camera.getPosition();
+    ctx.save();
+    ctx.translate(x + 8, y + 8);
+    ctx.rotate((Math.PI / 180) * camera.getAngle());
+    ctx.translate(-x - 8, -y - 8);
+    ctx.drawImage(imagesArr[IMG_ARROW], x, y);
+    ctx.restore();
+}
 
-// ctx.fillStyle = "rgb(47,47,47)";
-// ctx.fillRect(0, 0, 30, 30);
+setInterval(draw, 10);
