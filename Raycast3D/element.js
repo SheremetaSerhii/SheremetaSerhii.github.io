@@ -64,7 +64,7 @@ export class MovableElement extends GameElement {
     }
 
     setMoveSpeed(speed) {
-        _moveSpeed = speed;
+        this._moveSpeed = speed;
     }
 
     turnLeft(turnAngle) {
