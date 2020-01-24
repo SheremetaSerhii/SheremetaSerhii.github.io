@@ -20,16 +20,24 @@ export class GameElement {
         return [this._x, this._y];
     }
 
-    setAngle(angle) {
-        this._angle = angle;
-        if (this._angle < 0 || this._angle >= 360) {
-            this._angle = 0;
+    _getFixedAngle(angle) {
+        while (angle < 0) {
+            angle += 360;
         }
+        while (angle >= 360) {
+            angle -= 360;
+        }
+        return angle;
+    }
+
+    setAngle(angle) {
+        this._angle = this._getFixedAngle(angle);
     }
 
     getAngle() {
         return this._angle;
     }
+
 }
 
 export class MovableElement extends GameElement {
@@ -44,18 +52,11 @@ export class MovableElement extends GameElement {
     _getTurnedAngle(baseAngle, turnAngle) {
         let currentAngle = baseAngle;
         currentAngle += turnAngle;
-        if (currentAngle < 0) {
-            currentAngle += 360;
-        } else {
-            if (currentAngle >= 360) {
-                currentAngle -= 360;
-            }
-        }
         return currentAngle;
     }
 
     _moveInDirection(directionAngle, distance) {
-        let radians = (Math.PI / 180) * directionAngle - 90;
+        let radians = (Math.PI / 180) * this._getFixedAngle(directionAngle - 90);
         this._x += Math.cos(radians) * distance;
         this._y += Math.sin(radians) * distance;
     }
@@ -80,4 +81,5 @@ export class MovableElement extends GameElement {
         let currentAngle = this._getTurnedAngle(this._angle, 180);
         this._moveInDirection(currentAngle, this._moveSpeed);
     }
+
 }

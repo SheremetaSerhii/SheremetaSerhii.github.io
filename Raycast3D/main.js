@@ -1,6 +1,8 @@
 "use strict"
 
 import { MovableElement } from "./element.js";
+import { KEYSTATE_ } from "./input.js";
+import { Input } from "./input.js";
 
 let camera = new MovableElement(160, 120, 0, 1);
 
@@ -32,10 +34,33 @@ else {
     alert("Your browser does not support canvas.");
 }
 
+let playerInput = new Input(50);
+
 function draw() {
-    ctx.clearRect(0, 0, canvasObj.width, canvasObj.height);
-    camera.turnRight(1);
-    camera.moveForward();
+
+    let currentKeyState;
+    currentKeyState = playerInput.getKeyState("up");
+    if (currentKeyState == KEYSTATE_.DOWN) {
+        camera.moveForward();
+    }
+    currentKeyState = playerInput.getKeyState("down");
+    if (currentKeyState == KEYSTATE_.DOWN) {
+        camera.moveBack();
+    }
+    currentKeyState = playerInput.getKeyState("left");
+    if (currentKeyState == KEYSTATE_.DOWN) {
+        camera.turnLeft(2);
+    }
+    currentKeyState = playerInput.getKeyState("right");
+    if (currentKeyState == KEYSTATE_.DOWN) {
+        camera.turnRight(2);
+    }
+    //console.log(currentKeyState);
+    // camera.turnRight(1);
+    // camera.moveForward();
+    //ctx.clearRect(0, 0, canvasObj.width, canvasObj.height);
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0, 0, canvasObj.width, canvasObj.height);
     let x, y;
     [x, y] = camera.getPosition();
     ctx.save();
