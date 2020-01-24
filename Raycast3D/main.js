@@ -3,8 +3,7 @@
 import { MovableElement } from "./element.js";
 import { KEYSTATE_ } from "./input.js";
 import { Input } from "./input.js";
-
-let camera = new MovableElement(160, 120, 0, 1);
+import { Screen } from "./screen.js";
 
 const IMAGE_NAMES = [
     "res/arrow.png",
@@ -24,17 +23,9 @@ for (let i = 0; i < IMAGE_NAMES.length; i++) {
     imagesArr.push(img);
 }
 
-let ctx;
-let canvasObj = document.getElementById("mainCanvas");
-
-if (canvasObj.getContext) {
-    ctx = canvasObj.getContext("2d");
-}
-else {
-    alert("Your browser does not support canvas.");
-}
-
 let playerInput = new Input(50);
+let gameScreen = new Screen(document.getElementById("mainCanvas"));
+let camera = new MovableElement(160, 120, 0, 1);
 
 function draw() {
 
@@ -55,20 +46,16 @@ function draw() {
     if (currentKeyState == KEYSTATE_.DOWN) {
         camera.turnRight(2);
     }
-    //console.log(currentKeyState);
-    // camera.turnRight(1);
-    // camera.moveForward();
-    //ctx.clearRect(0, 0, canvasObj.width, canvasObj.height);
-    ctx.fillStyle = "rgb(0,0,0)";
-    ctx.fillRect(0, 0, canvasObj.width, canvasObj.height);
+
     let x, y;
     [x, y] = camera.getPosition();
-    ctx.save();
-    ctx.translate(x + 8, y + 8);
-    ctx.rotate((Math.PI / 180) * camera.getAngle());
-    ctx.translate(-x - 8, -y - 8);
-    ctx.drawImage(imagesArr[IMG_ARROW], x, y);
-    ctx.restore();
+    gameScreen.fillBlack();
+    for (let i = 0; i < 320; i++) {
+        gameScreen.drawLineFromTextureInPosition(imagesArr[IMG_WALL01], 40 + (i % 100) * 2, i % imagesArr[IMG_WALL01].width, i, 100 - (i % 100));
+    }
+    gameScreen.drawRotatedImage(imagesArr[IMG_ARROW], x, y, camera.getAngle());
+    gameScreen.drawScreen();
+
 }
 
 setInterval(draw, 10);
