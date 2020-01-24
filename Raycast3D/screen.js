@@ -62,7 +62,7 @@ export class Screen {
                 fade = 100;
             }
             this.fillStyle = "rgb(0,0,0)";
-            this._bufferContext.globalAlpha = fade / 100;
+            this._bufferContext.globalAlpha = fade / 100; //Math.floor(fade / 5) / 20;
             this._bufferContext.fillRect(dstPos, topOffset, 1, lineLength);
             this._bufferContext.globalAlpha = 1;
         }

@@ -4,6 +4,7 @@ import { MovableElement } from "./element.js";
 import { KEYSTATE_ } from "./input.js";
 import { Input } from "./input.js";
 import { Screen } from "./screen.js";
+import { Camera } from "./camera.js";
 
 const IMAGE_NAMES = [
     "res/arrow.png",
@@ -50,8 +51,10 @@ function draw() {
     let x, y;
     [x, y] = camera.getPosition();
     gameScreen.fillBlack();
+    let j;
     for (let i = 0; i < 320; i++) {
-        gameScreen.drawLineFromTextureInPosition(imagesArr[IMG_WALL01], 40 + (i % 100) * 2, i % imagesArr[IMG_WALL01].width, i, 100 - (i % 100));
+        j = i < 100 || (i >= 200 && i < 300) ? i % 100 : 100 - (i % 100);
+        gameScreen.drawLineFromTextureInPosition(imagesArr[IMG_WALL02], 40 + j * 2, i % imagesArr[IMG_WALL01].width, i, 100 - j);
     }
     gameScreen.drawRotatedImage(imagesArr[IMG_ARROW], x, y, camera.getAngle());
     gameScreen.drawScreen();
