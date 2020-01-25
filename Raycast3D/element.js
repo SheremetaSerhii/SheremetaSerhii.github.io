@@ -21,13 +21,8 @@ export class GameElement {
     }
 
     _getFixedAngle(angle) {
-        while (angle < 0) {
-            angle += 360;
-        }
-        while (angle >= 360) {
-            angle -= 360;
-        }
-        return angle;
+        let result = angle % 360;
+        return (result >= 0 ? result : result + 360);
     }
 
     setAngle(angle) {
