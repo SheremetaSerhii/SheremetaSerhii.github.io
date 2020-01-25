@@ -42,7 +42,7 @@ export const LEVEL_DATA = [
             [O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, WW02, O__O, WW02, O__O, WW02, O__O, WW02, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 16
             [O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 17
             [O__O, WW02, WW02, WW02, WW02, WW02, WW02, WW02, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 17
-            [O__O, WW02, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 19
+            [O__O, WW02, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, STRT, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 19
             [O__O, WW02, O__O, WW02, WW02, WW02, WW02, WW02, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 20
             [O__O, WW02, O__O, WW02, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 21
             [O__O, WW02, O__O, WW02, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, WW02, O__O, WW02, O__O, WW02, O__O, WW02, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 22
@@ -52,7 +52,7 @@ export const LEVEL_DATA = [
             [WW01, WW01, O__O, WW01, WW01, O__O, O__O, O__O, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 26
             [WW01, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 27
             [WW01, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 28
-            [WW01, O__O, STRT, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 29
+            [WW01, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 29
             [WW01, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O], // 30
             [WW01, WW01, WW01, WW01, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O]  // 31
         ]
