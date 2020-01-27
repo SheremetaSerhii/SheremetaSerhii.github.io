@@ -41,9 +41,9 @@ export const LEVEL_DATA = [
             [O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, WW02, WW02, WW02, WW02, WW02, WW02, WW02, WW02, O__O], // 15
             [O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, WW02, O__O, WW02, O__O, WW02, O__O, WW02, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 16
             [O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 17
-            [O__O, WW02, WW02, WW02, WW02, WW02, WW02, WW02, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 17
+            [O__O, WW02, WW02, WW02, WW02, WW02, WW02, WW02, WW01, O__O, O__O, O__O, WW02, O__O, O__O, O__O, O__O, O__O, WW02, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 17
             [O__O, WW02, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, STRT, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 19
-            [O__O, WW02, O__O, WW02, WW02, WW02, WW02, WW02, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 20
+            [O__O, WW02, O__O, WW02, WW02, WW02, WW02, WW02, WW01, O__O, O__O, O__O, WW02, O__O, O__O, O__O, O__O, O__O, WW02, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 20
             [O__O, WW02, O__O, WW02, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 21
             [O__O, WW02, O__O, WW02, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, WW02, O__O, WW02, O__O, WW02, O__O, WW02, O__O, O__O, O__O, WW01, WW02, O__O, O__O, O__O, O__O, O__O, O__O, WW02, O__O], // 22
             [O__O, WW02, O__O, WW02, O__O, O__O, O__O, O__O, WW01, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, O__O, WW01, WW02, WW02, WW02, WW02, WW02, WW02, WW02, WW02, O__O], // 23

@@ -2,7 +2,7 @@
 
 import { WALL_SIZE } from "./data.js";
 const
-    CLOSE_LIGHT_DISTANCE = WALL_SIZE * 2,
+    CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
     FAR_LIGHT_DISTANCE = WALL_SIZE * 12,
     DIRECTION_X = 0,
     DIRECTION_Y = 1;
@@ -15,9 +15,9 @@ const
 
 export class Camera {
 
-    _width = WALL_SIZE / 2;
+    _width = WALL_SIZE / 4;//2;
     //_height = 0;
-    _fov = 10;
+    _fov = 5.5;//11;
     _x = 0;
     _y = 0;
     _angle = 0;
@@ -127,14 +127,14 @@ export class Camera {
             ray.surface = scene.textureData[textureIndex];
             let a = cameraPointPos.x - traceEndingPosition.sceneX;
             let b = cameraPointPos.y - traceEndingPosition.sceneY;
-            ray.distanceToSurface = Math.sqrt((a * a) + (b * b));
-            // a = this._raySourcePosition.x - cameraPointPos.x;
-            // b = this._raySourcePosition.y - cameraPointPos.y;
-            // let distanceFromSource = ray.distanceToSurface + Math.sqrt((a * a) + (b * b));
-            // ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / distanceFromSource;
-            ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / ray.distanceToSurface;
-            // let dist = this._getPerpendicularDistanceToCamera(cameraPointPos.y, traceEndingPosition.sceneY, ray.distanceToSurface, this._angle);
-            // ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / dist;
+            let dd = Math.sqrt((a * a) + (b * b));
+            a = this._raySourcePosition.x - cameraPointPos.x;
+            b = this._raySourcePosition.y - cameraPointPos.y;
+            let cc = Math.sqrt((a * a) + (b * b));
+            let finalDistance = this._fov * dd / cc;
+            ray.distanceToSurface = dd;
+            ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / finalDistance;
+
             ray.positionOnSurface = Math.floor(Math.max(traceEndingPosition.sceneX % WALL_SIZE, traceEndingPosition.sceneY % WALL_SIZE));
             if (traceEndingPosition.side == SIDE_UP || traceEndingPosition.side == SIDE_RIGHT) {
                 ray.positionOnSurface = WALL_SIZE - ray.positionOnSurface - 1;
@@ -142,14 +142,6 @@ export class Camera {
             ray.positionOnSurface = Math.floor((ray.positionOnSurface * ray.surface.width) / WALL_SIZE);
         }
         return ray;
-    }
-
-    _getPerpendicularDistanceToCamera(camY, surfY, hypotenuse, camAngle) {
-        //let catet = Math.abs(surfY - camY);
-        //let angle = (Math.acos(catet / hypotenuse) + 90 - camAngle) % 360;
-        let c = Math.abs(surfY - camY);
-        let angle = 90 - (camAngle % 90);
-        return Math.sin(angle) * c;//hypotenuse;
     }
 
     _getEndPosA(controlSizeA, controlSizeB, startPosA, startPosB, endPosB) {
