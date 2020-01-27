@@ -17,7 +17,7 @@ export class Camera {
 
     _width = WALL_SIZE;
     //_height = 0;
-    _fov = 24;
+    _fov = 20;
     _x = 0;
     _y = 0;
     _angle = 0;
@@ -93,10 +93,10 @@ export class Camera {
         //console.log("-- New tracing --");
         if (Math.abs(controlSizeX) < Math.abs(controlSizeY)) {
             // go threw Y coordinate first:
-            rayDstPos.y = Math.floor(rayDstPos.y / WALL_SIZE) * WALL_SIZE;
-            if (yInc > 0) {
-                rayDstPos.y += yInc;
+            if (yInc > 0 && rayDstPos.y % WALL_SIZE > 0) {
+                rayDstPos.y += WALL_SIZE;
             }
+            rayDstPos.y = Math.floor(rayDstPos.y / WALL_SIZE) * WALL_SIZE;
             rayDstPos.x = this._getEndPosA(controlSizeX, controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, rayDstPos.y);
             //rayDstPos.x = (controlSizeX * (rayDstPos.y - this._raySourcePosition.y)) / controlSizeY + this._raySourcePosition.x;
             [oldRayDstPos.x, oldRayDstPos.y] = [rayDstPos.x, rayDstPos.y]; //*
@@ -113,10 +113,10 @@ export class Camera {
         }
         else {
             // go threw X coordinate first:
-            rayDstPos.x = Math.floor(rayDstPos.x / WALL_SIZE) * WALL_SIZE;
-            if (xInc > 0) {
-                rayDstPos.x += xInc;
+            if (xInc > 0 && rayDstPos.x % WALL_SIZE > 0) {
+                rayDstPos.x += WALL_SIZE;
             }
+            rayDstPos.x = Math.floor(rayDstPos.x / WALL_SIZE) * WALL_SIZE;
             rayDstPos.y = this._getEndPosA(controlSizeY, controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, rayDstPos.x);
             [oldRayDstPos.x, oldRayDstPos.y] = [rayDstPos.x, rayDstPos.y]; //*
             while (rayDstPos.x > 0 && rayDstPos.x < rightLimit && rayDstPos.y > 0 && rayDstPos.y < bottomLimit && traceEndingPosition == undefined) {
@@ -139,7 +139,7 @@ export class Camera {
             a = this._raySourcePosition.x - cameraPointPos.x;
             b = this._raySourcePosition.y - cameraPointPos.y;
             let distanceFromSource = ray.distanceToSurface + Math.sqrt((a * a) + (b * b));
-            ray.surfaceHeight = ((WALL_SIZE >>> 1) * this._fov * 10) / distanceFromSource;
+            ray.surfaceHeight = ((WALL_SIZE /*>>> 1*/) * this._fov * 10) / distanceFromSource;
             ray.positionOnSurface = Math.floor(Math.max(traceEndingPosition.sceneX % WALL_SIZE, traceEndingPosition.sceneY % WALL_SIZE));
             if (traceEndingPosition == SIDE_UP || traceEndingPosition == SIDE_RIGHT) {
                 ray.positionOnSurface = WALL_SIZE - ray.positionOnSurface - 1;
@@ -155,7 +155,7 @@ export class Camera {
     }
 
     _getEndPosA(controlSizeA, controlSizeB, startPosA, startPosB, endPosB) {
-        return (controlSizeA * (endPosB - startPosB)) / controlSizeB + startPosA;
+        return ((controlSizeA * (endPosB - startPosB)) / controlSizeB) + startPosA;
         //(rayDstPos.x - this._raySourcePosition.x) / (rayDstPos.y - this._raySourcePosition.y) == controlSizeX / controlSizeY
     }
 
@@ -163,17 +163,17 @@ export class Camera {
         let pos = { sceneX: 0, sceneY: 0, tileX: 0, tileY: 0, side: SIDE_UP };
         let surfaceEarned = false; //*
         let oldTileX, oldTileY, newTileX, newTileY;
-        let xDifference = startPosX - endPosX;
-        let yDifference = startPosY - endPosY;
+        let xDifference = endPosX - startPosX;//startPosX - endPosX;
+        let yDifference = endPosY - startPosY;//startPosY - endPosY;
         [oldTileX, oldTileY] = this._getTilePos(startPosX, startPosY, xDifference, yDifference);
         [newTileX, newTileY] = this._getTilePos(endPosX, endPosY, xDifference, yDifference);
         switch (direction) {
             case DIRECTION_X:
                 if (oldTileY != newTileY) {
-                    if (this._isSurface(scene, oldTileX, newTileY)) {
-                        pos.tileX = oldTileX;
-                        pos.tileY = newTileY;
-                        pos.sceneY = Math.floor(startPosY / WALL_SIZE) * WALL_SIZE;
+                    if (this._isSurface(scene, newTileX, oldTileY/*oldTileX, newTileY*/)) {
+                        pos.tileX = newTileX;//oldTileX;
+                        pos.tileY = oldTileY;//newTileY;
+                        pos.sceneY = /*oldTileY * WALL_SIZE;//*/Math.floor(startPosY / WALL_SIZE) * WALL_SIZE;
                         if (yDifference >= 0) {
                             pos.sceneY += WALL_SIZE;
                             pos.side = SIDE_UP;
@@ -183,9 +183,10 @@ export class Camera {
                         }
                         pos.sceneX = this._getEndPosA(controlSizeX, controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, pos.sceneY);
                         surfaceEarned = true;
+                        break;
                     }
                 }
-                else {
+                //else {
                     if (this._isSurface(scene, newTileX, newTileY)) {
                         pos.tileX = newTileX;
                         pos.tileY = newTileY;
@@ -194,14 +195,14 @@ export class Camera {
                         pos.side = xDifference >= 0 ? SIDE_LEFT : SIDE_RIGHT;
                         surfaceEarned = true;
                     }
-                }
+                //}
                 break;
             case DIRECTION_Y:
                 if (oldTileX != newTileX) {
-                    if (this._isSurface(scene, newTileX, oldTileY)) {
-                        pos.tileX = newTileX;
-                        pos.tileY = oldTileY;
-                        pos.sceneX = Math.floor(startPosX / WALL_SIZE) * WALL_SIZE;
+                    if (this._isSurface(scene, oldTileX, newTileY/*newTileX, oldTileY*/)) {
+                        pos.tileX = oldTileX;//newTileX;
+                        pos.tileY = newTileY;//oldTileY;
+                        pos.sceneX = /*oldTileX * WALL_SIZE;//*/Math.floor(startPosX / WALL_SIZE) * WALL_SIZE;
                         if (xDifference >= 0) {
                             pos.sceneX += WALL_SIZE;
                             pos.side = SIDE_LEFT;
@@ -211,9 +212,10 @@ export class Camera {
                         }
                         pos.sceneY = this._getEndPosA(controlSizeY, controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, pos.sceneX);
                         surfaceEarned = true;
+                        break;
                     }
                 }
-                else {
+                //else {
                     if (this._isSurface(scene, newTileX, newTileY)) {
                         pos.tileX = newTileX;
                         pos.tileY = newTileY;
@@ -222,7 +224,7 @@ export class Camera {
                         pos.side = yDifference >= 0 ? SIDE_UP : SIDE_DOWN;
                         surfaceEarned = true;
                     }
-                }
+                //}
                 break;
             default:
                 return undefined;
@@ -233,10 +235,16 @@ export class Camera {
     _getTilePos(x, y, xDifference, yDifference) {
         let resultX = Math.floor(x / WALL_SIZE);
         let resultY = Math.floor(y / WALL_SIZE);
-        if (xDifference < 0) {
+        // if (xDifference < 0) {
+        //     resultX--;
+        // }
+        // if (yDifference < 0) {
+        //     resultY--;
+        // }
+        if (xDifference < 0 && x % WALL_SIZE == 0) {
             resultX--;
         }
-        if (yDifference < 0) {
+        if (yDifference < 0 && y % WALL_SIZE == 0) {
             resultY--;
         }
         return [resultX, resultY];
