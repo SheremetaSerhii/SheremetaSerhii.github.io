@@ -77,4 +77,14 @@ export class MovableElement extends GameElement {
         this._moveInDirection(currentAngle, this._moveSpeed);
     }
 
+    moveRight() {
+        let currentAngle = this._getTurnedAngle(this._angle, 90);
+        this._moveInDirection(currentAngle, this._moveSpeed);
+    }
+
+    moveLeft() {
+        let currentAngle = this._getTurnedAngle(this._angle, 270);
+        this._moveInDirection(currentAngle, this._moveSpeed);
+    }
+
 }

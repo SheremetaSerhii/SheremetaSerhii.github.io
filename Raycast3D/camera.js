@@ -1,6 +1,7 @@
 "use strict"
 
 import { WALL_SIZE } from "./data.js";
+
 const
     CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
     FAR_LIGHT_DISTANCE = WALL_SIZE * 12,
@@ -15,9 +16,9 @@ const
 
 export class Camera {
 
-    _width = WALL_SIZE / 4;//2;
-    //_height = 0;
-    _fov = 5.5;//11;
+    _width = WALL_SIZE / /*4;/*/2 - 4;
+    _height = 0;
+    _fov = 8;//*5.5;/*/11;
     _x = 0;
     _y = 0;
     _angle = 0;
@@ -25,17 +26,17 @@ export class Camera {
 
     constructor(x, y, angle) {
         this.setCameraPosition(x, y, angle);
-        //this._calculateCameraHeight();
+        this._calculateCameraHeight();
     }
 
-    // _calculateCameraHeight() {
-    //     this._height = (240 * this._width) / 320;
-    // }
+    _calculateCameraHeight() {
+        this._height = (240 * this._width) / 320;
+    }
 
     setCameraView(width, fov) {
         this._width = width;
         this._fov = fov;
-        //this._calculateCameraHeight();
+        this._calculateCameraHeight();
     }
 
     setCameraPosition(x, y, angle) {
@@ -82,8 +83,10 @@ export class Camera {
         [rayDstPos.x, rayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
         let xInc = cameraPointPos.x >= this._raySourcePosition.x ? WALL_SIZE : -WALL_SIZE;
         let yInc = cameraPointPos.y >= this._raySourcePosition.y ? WALL_SIZE : -WALL_SIZE;
-        let rightLimit = scene.mapData.sizeX * WALL_SIZE;
-        let bottomLimit = scene.mapData.sizeY * WALL_SIZE;
+        let rightLimit, bottomLimit;
+        [rightLimit, bottomLimit] = scene.getMapSize();
+        rightLimit *= WALL_SIZE;
+        bottomLimit *= WALL_SIZE;
         let controlSizeX = cameraPointPos.x - this._raySourcePosition.x;
         let controlSizeY = cameraPointPos.y - this._raySourcePosition.y;
         let traceEndingPosition = undefined;
@@ -95,7 +98,7 @@ export class Camera {
             }
             rayDstPos.y = Math.floor(rayDstPos.y / WALL_SIZE) * WALL_SIZE;
             rayDstPos.x = this._getEndPosA(controlSizeX, controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, rayDstPos.y);
-            [oldRayDstPos.x, oldRayDstPos.y] = [rayDstPos.x - controlSizeX * 2, rayDstPos.y - controlSizeY * 2];
+            [oldRayDstPos.x, oldRayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
             while (rayDstPos.x > 0 && rayDstPos.x < rightLimit && rayDstPos.y > 0 && rayDstPos.y < bottomLimit && traceEndingPosition == undefined) {
                 traceEndingPosition = this._getTraceEndingPosition(scene, oldRayDstPos.x, oldRayDstPos.y, rayDstPos.x, rayDstPos.y, DIRECTION_Y, controlSizeX, controlSizeY);
                 if (traceEndingPosition == undefined) {
@@ -112,7 +115,7 @@ export class Camera {
             }
             rayDstPos.x = Math.floor(rayDstPos.x / WALL_SIZE) * WALL_SIZE;
             rayDstPos.y = this._getEndPosA(controlSizeY, controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, rayDstPos.x);
-            [oldRayDstPos.x, oldRayDstPos.y] = [rayDstPos.x - controlSizeX * 2, rayDstPos.y - controlSizeY * 2];
+            [oldRayDstPos.x, oldRayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
             while (rayDstPos.x > 0 && rayDstPos.x < rightLimit && rayDstPos.y > 0 && rayDstPos.y < bottomLimit && traceEndingPosition == undefined) {
                 traceEndingPosition = this._getTraceEndingPosition(scene, oldRayDstPos.x, oldRayDstPos.y, rayDstPos.x, rayDstPos.y, DIRECTION_X, controlSizeX, controlSizeY);
                 if (traceEndingPosition == undefined) {
@@ -123,8 +126,7 @@ export class Camera {
             }
         }
         if (traceEndingPosition != undefined) {
-            let textureIndex = scene.mapData.map[traceEndingPosition.tileY][traceEndingPosition.tileX];
-            ray.surface = scene.textureData[textureIndex];
+            ray.surface = scene.getSurface(traceEndingPosition.tileX, traceEndingPosition.tileY);
             let a = cameraPointPos.x - traceEndingPosition.sceneX;
             let b = cameraPointPos.y - traceEndingPosition.sceneY;
             let dd = Math.sqrt((a * a) + (b * b));
@@ -133,8 +135,8 @@ export class Camera {
             let cc = Math.sqrt((a * a) + (b * b));
             let finalDistance = this._fov * dd / cc;
             ray.distanceToSurface = dd;
-            ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / finalDistance;
-
+            //ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / finalDistance;
+            ray.surfaceHeight = (WALL_SIZE * this._height * (320 / this._width)) / (((this._height * finalDistance) / this._fov) + this._fov /*8*/);
             ray.positionOnSurface = Math.floor(Math.max(traceEndingPosition.sceneX % WALL_SIZE, traceEndingPosition.sceneY % WALL_SIZE));
             if (traceEndingPosition.side == SIDE_UP || traceEndingPosition.side == SIDE_RIGHT) {
                 ray.positionOnSurface = WALL_SIZE - ray.positionOnSurface - 1;
@@ -226,7 +228,7 @@ export class Camera {
     }
 
     _isSurface(scene, x, y) {
-        return (scene.mapData.map[y][x] != 0 && scene.mapData.map[y][x] != 10000);
+        return scene.isWall(x, y);
     }
 
 }
