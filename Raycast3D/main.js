@@ -13,11 +13,13 @@ class GameLoop {
     }
 
     startGameLoop() {
-        this._gameLoopId = setInterval(this._updateGameFunc, 10);
+        //this._gameLoopId = setInterval(this._updateGameFunc, 10);
+        this._gameLoopId = requestAnimationFrame(this._updateGameFunc);
     }
 
     endGameLoop() {
-        clearInterval(this._gameLoopId);
+        //clearInterval(this._gameLoopId);
+        cancelAnimationFrame(this._gameLoopId);
     }
 
 }
@@ -30,10 +32,11 @@ function updateGame() {
     gameScreen.fillBlack();
     player.getCamera().drawSceneToScreen(gameMap, gameScreen);
     gameScreen.drawScreen();
+    requestAnimationFrame(updateGame);
 }
 
 const
-    PLAYER_SPEED = 1.5,
+    PLAYER_SPEED = 2.5,//1.5,
     PLAYER_SIZE = 16,
     START_LEVEL = 0;
 let gameLoop = new GameLoop(updateGame);
