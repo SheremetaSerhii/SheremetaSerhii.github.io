@@ -16,8 +16,8 @@ const
     SS = MAP_INDEX_.START_PLACE;
 
 export const RESOLUTION_ = {
-    X: 640,//*/1920,//*1280,/*/1120,//320,//240,
-    Y: 480//*/1080//*960/*/840//240//180
+    X: 320,//640,//*/1920,//*1280,/*/1120,//320,//240,
+    Y: 240//480//*/1080//*960/*/840//240//180
 }
 
 export const WALL_SIZE = 256;//32;
@@ -31,10 +31,12 @@ export const LOOK_ = {
 
 export const IMG_ = {
     ARROW: { I: 0, NAME: "res/arrow.png" },
-    WALL01: { I: 1, NAME: "res/wall01.png" },
-    WALL02: { I: 2, NAME: "res/wall02.png" },
-    WALL03: { I: 3, NAME: "res/wall03.png" },
-    WALL04: { I: 4, NAME: "res/wall04.png" }
+    TEX01: { I: 1, NAME: "res/wall01.png" },
+    TEX02: { I: 2, NAME: "res/wall02.png" },
+    TEX03: { I: 3, NAME: "res/wall03.png" },
+    TEX04: { I: 4, NAME: "res/wall04.png" },
+    TEX05: { I: 5, NAME: "res/floor02.png" },
+    TEX06: { I: 6, NAME: "res/ceiling01.png" }
 }
 
 export const LEVEL_DATA = [
@@ -43,7 +45,7 @@ export const LEVEL_DATA = [
         startLook: LOOK_.UP,
         sizeX: 32,
         sizeY: 32,
-        walls: [IMG_.WALL01.I, IMG_.WALL02.I, IMG_.WALL03.I, IMG_.WALL04.I],
+        walls: [IMG_.TEX01.I, IMG_.TEX02.I, IMG_.TEX03.I, IMG_.TEX04.I, IMG_.TEX05.I, IMG_.TEX06.I], // TEX05 and TEX06 is temporary yet
         map: [
             //0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
             [__, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, __, W2, W2, W2, W2, W2, W2, W2, W2, W4, W4, W4, W4, W4, W4, W4, W4], // 0

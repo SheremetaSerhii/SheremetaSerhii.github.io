@@ -83,6 +83,13 @@ export class Map {
         return (this.isWall(x, y) ? this._data.textureData[this.getTile(x, y) - 1] : undefined);
     }
 
+    getFloorAndCeiling(x, y) { 
+        // temporary things here yet:
+        let floor = this._data.textureData[this._data.textureData.length - 2];
+        let ceiling = this._data.textureData[this._data.textureData.length - 1];
+        return [ceiling, floor];
+    }
+
     _getMapTexturesFromTexturesList(levelN, texturesList) {
         let mapTextures = [];
         for (let i = 0; i < LEVEL_DATA[levelN].walls.length; i++) {
@@ -97,6 +104,8 @@ export class Map {
 export class Textures {
 
     _textures = undefined;
+    // _texturesContext = undefined;
+    // _texturesData = undefined;
     _texturesCounter = 0;
     _totalImagesQuantity = 0;
     _callbackFunction = undefined;
@@ -120,6 +129,16 @@ export class Textures {
             this._textures.push(currentImage);
         }
     }
+
+    // _makeCanvasFromImages() {
+    //     this._texturesContext = [];
+    //     this._texturesData = [];
+    //     let ctx, data;
+    //     for (let i = 0; i < this._totalImagesQuantity; i++) {
+    //         ctx = this._textures[i].getContext("2d");
+    //         data = ctx.getImageData()
+    //     }
+    // }
 
     setCallback(callbackFunction) {
         if (typeof callbackFunction === "function") {

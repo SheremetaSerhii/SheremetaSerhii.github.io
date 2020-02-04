@@ -3,6 +3,14 @@
 import { RESOLUTION_ } from "./data.js";
 import { RADIAN_MOD } from "./data.js";
 
+export function disableImageSmoothing(ctx) {
+    ctx.oImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
+}
+
 export let resolution = undefined;
 
 export class Screen {
@@ -21,7 +29,7 @@ export class Screen {
         if (canvasObj.getContext) {
             this._surface = canvasObj;
             this._surfaceContext = canvasObj.getContext("2d", { alpha: false });
-            this._surfaceContext.imageSmoothingEnabled = false;
+            disableImageSmoothing(this._surfaceContext);
         }
         else {
             alert("Your browser does not support canvas.");
@@ -36,7 +44,8 @@ export class Screen {
         this._buffer.width = this._resolution.x;
         this._buffer.height = this._resolution.y;
         this._bufferContext = this._buffer.getContext("2d");
-        this._bufferContext.imageSmoothingEnabled = false;
+        this._bufferContext.alpha = false;
+        disableImageSmoothing(this._bufferContext);
     }
 
     drawScreen() {
@@ -81,6 +90,13 @@ export class Screen {
             this._bufferContext.fillRect(dstPos, topOffset, 1, roundedLineLen);
             this._bufferContext.globalAlpha = 1;
         }
+    }
+
+    drawCeilingAndFloorLineInPosition(lineTexture, lineLength, dstPos) {
+        let floorTopOffset = this._resolution.y - lineLength;
+        this._bufferContext.drawImage(lineTexture, 0, 0, 1, lineLength, dstPos, 0, 1, lineLength); //ceiling
+        this._bufferContext.drawImage(lineTexture, 1, 0, 1, lineLength, dstPos, floorTopOffset, 1, lineLength); //floor
+        //must add some fade later
     }
 
 }
