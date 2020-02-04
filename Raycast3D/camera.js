@@ -1,6 +1,8 @@
 "use strict"
 
 import { WALL_SIZE } from "./data.js";
+import { RADIAN_MOD } from "./data.js";
+import { resolution } from "./screen.js";
 
 const
     CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
@@ -16,9 +18,9 @@ const
 
 export class Camera {
 
-    _width = WALL_SIZE / /*4;/*/2 - 4;
+    _width = WALL_SIZE / /*4;/*/2 - 4 * (WALL_SIZE >>> 5);
     _height = 0;
-    _fov = 8;//*5.5;/*/11;
+    _fov = 8 * (WALL_SIZE >>> 5);//*5.5;/*/11;
     _x = 0;
     _y = 0;
     _angle = 0;
@@ -27,31 +29,33 @@ export class Camera {
     constructor(x, y, angle) {
         this.setCameraPosition(x, y, angle);
         this._calculateCameraHeight();
+        this._preliminaryCalculations();
     }
 
     _calculateCameraHeight() {
-        this._height = (240 * this._width) / 320;
+        this._height = (resolution.y * this._width) / resolution.x;
     }
 
     setCameraView(width, fov) {
         this._width = width;
         this._fov = fov;
         this._calculateCameraHeight();
+        this._preliminaryCalculations();
     }
 
     setCameraPosition(x, y, angle) {
         this._x = x;
         this._y = y;
-        this._angle = angle;
+        this._angle = angle % 360;
         //calculation of ray source position:
-        let radians = (Math.PI / 180) * ((this._angle + 90) % 360);
+        let radians = RADIAN_MOD * ((this._angle + 90) % 360);
         this._raySourcePosition.x = this._x + Math.cos(radians) * this._fov;
         this._raySourcePosition.y = this._y + Math.sin(radians) * this._fov;
     }
 
     drawSceneToScreen(scene, screen) {
         let ray, fade;
-        for (let i = 0; i < 320; i++) {
+        for (let i = 0; i < resolution.x; i++) {
             ray = this._getRay(scene, i);
             if (ray.surface != undefined) {
                 fade = 0;
@@ -66,6 +70,32 @@ export class Camera {
         }
     }
 
+    _preliminaryCalculatedXinc = undefined;
+    _preliminaryCalculatedYinc = undefined;
+    _prelimCalcSurfaceHeight_Pt1 = undefined;
+    _prelimCalcSurfaceHeight_Pt2 = undefined;
+
+    _preliminaryCalculations() {
+        this._preliminaryCalculatedXinc = [];
+        this._preliminaryCalculatedYinc = [];
+        this._preliminaryCalculatedXinc.length = resolution.x;
+        this._preliminaryCalculatedYinc.length = resolution.x;
+        for (let j = 0; j < resolution.x; j++) {
+            let cameraPoint = (j * this._width) / resolution.x - (this._width >>> 1);
+            this._preliminaryCalculatedXinc[j] = [];
+            this._preliminaryCalculatedYinc[j] = [];
+            this._preliminaryCalculatedXinc[j].length = 360;
+            this._preliminaryCalculatedYinc[j].length = 360;
+            for (let i = 0; i < 360; i++) {
+                let radians = RADIAN_MOD * i;
+                this._preliminaryCalculatedXinc[j][i] = Math.cos(radians) * cameraPoint;
+                this._preliminaryCalculatedYinc[j][i] = Math.sin(radians) * cameraPoint;
+            }
+        }
+        this._prelimCalcSurfaceHeight_Pt1 = (WALL_SIZE * this._height * resolution.x) / this._width;
+        this._prelimCalcSurfaceHeight_Pt2 = this._height / this._fov;
+    }
+
     _getRay(scene, rayIndex) {
         let ray = {
             surface: undefined,
@@ -73,13 +103,15 @@ export class Camera {
             positionOnSurface: 0,
             distanceToSurface: 0
         };
-        let cameraPoint = (rayIndex * this._width) / 320 - (this._width >>> 1);
+        // let cameraPoint = (rayIndex * this._width) / resolution.x - (this._width >>> 1);
         let cameraPointPos = { x: 0, y: 0 };
         let rayDstPos = { x: 0, y: 0 };
         let oldRayDstPos = { x: 0, y: 0 };
-        let radians = (Math.PI / 180) * ((this._angle) % 360);
+        /*let radians = RADIAN_MOD * this._angle;
         cameraPointPos.x = this._x + Math.cos(radians) * cameraPoint;
-        cameraPointPos.y = this._y + Math.sin(radians) * cameraPoint;
+        cameraPointPos.y = this._y + Math.sin(radians) * cameraPoint;*/
+        cameraPointPos.x = this._x + this._preliminaryCalculatedXinc[rayIndex][this._angle];
+        cameraPointPos.y = this._y + this._preliminaryCalculatedYinc[rayIndex][this._angle];
         [rayDstPos.x, rayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
         let xInc = cameraPointPos.x >= this._raySourcePosition.x ? WALL_SIZE : -WALL_SIZE;
         let yInc = cameraPointPos.y >= this._raySourcePosition.y ? WALL_SIZE : -WALL_SIZE;
@@ -136,7 +168,8 @@ export class Camera {
             let finalDistance = this._fov * dd / cc;
             ray.distanceToSurface = dd;
             //ray.surfaceHeight = (WALL_SIZE * this._fov * (320 / this._width)) / finalDistance;
-            ray.surfaceHeight = (WALL_SIZE * this._height * (320 / this._width)) / (((this._height * finalDistance) / this._fov) + this._fov /*8*/);
+            //ray.surfaceHeight = (WALL_SIZE * this._height * (resolution.x / this._width)) / (((this._height * finalDistance) / this._fov) + this._fov /*8*/);
+            ray.surfaceHeight = this._prelimCalcSurfaceHeight_Pt1 / ((this._prelimCalcSurfaceHeight_Pt2 * finalDistance) + this._fov);
             ray.positionOnSurface = Math.floor(Math.max(traceEndingPosition.sceneX % WALL_SIZE, traceEndingPosition.sceneY % WALL_SIZE));
             if (traceEndingPosition.side == SIDE_UP || traceEndingPosition.side == SIDE_RIGHT) {
                 ray.positionOnSurface = WALL_SIZE - ray.positionOnSurface - 1;
@@ -229,6 +262,16 @@ export class Camera {
 
     _isSurface(scene, x, y) {
         return scene.isWall(x, y);
+    }
+
+    _getFloorAndCeilingLine(distance, hPixels) {
+        let hReal = Math.round((hPixels * this._height) / resolution.y);
+        let m = ((distance * WALL_SIZE) / (WALL_SIZE - hReal)) - distance;
+        //for (i = )
+    }
+
+    _getFloorHypotenuse(h, m) {
+        return ((WALL_SIZE * m) / h) - m;
     }
 
 }

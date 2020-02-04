@@ -1,5 +1,7 @@
 "use strict"
 
+export const RADIAN_MOD = Math.PI / 180;
+
 export const MAP_INDEX_ = {
     START_PLACE: 100,
     FOES_BEGIN: 200,
@@ -13,7 +15,12 @@ const
     WK = 21, WL = 22, WM = 23, WN = 24, WO = 25, WP = 26, WQ = 27, WR = 28, WS = 29, WT = 30,
     SS = MAP_INDEX_.START_PLACE;
 
-export const WALL_SIZE = 32;
+export const RESOLUTION_ = {
+    X: 640,//*/1920,//*1280,/*/1120,//320,//240,
+    Y: 480//*/1080//*960/*/840//240//180
+}
+
+export const WALL_SIZE = 256;//32;
 
 export const LOOK_ = {
     LEFT: 0,

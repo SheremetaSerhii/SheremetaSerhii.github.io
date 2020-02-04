@@ -1,5 +1,7 @@
 "use strict";
 
+import { RADIAN_MOD } from "./data.js";
+
 export class GameElement {
 
     _x = 0;
@@ -51,7 +53,7 @@ export class MovableElement extends GameElement {
     }
 
     _moveInDirection(directionAngle, distance) {
-        let radians = (Math.PI / 180) * this._getFixedAngle(directionAngle - 90);
+        let radians = RADIAN_MOD * this._getFixedAngle(directionAngle - 90);
         this._x += Math.cos(radians) * distance;
         this._y += Math.sin(radians) * distance;
     }

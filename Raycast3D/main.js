@@ -2,6 +2,7 @@
 
 import { Screen } from "./screen.js";
 import { Loader } from "./loader.js";
+import { WALL_SIZE } from "./data.js";
 
 class GameLoop {
 
@@ -36,8 +37,8 @@ function updateGame() {
 }
 
 const
-    PLAYER_SPEED = 2.5,//1.5,
-    PLAYER_SIZE = 16,
+    PLAYER_SPEED = 2.5 * (WALL_SIZE >>> 5),//1.5,
+    PLAYER_SIZE = 16 * (WALL_SIZE >>> 5),
     START_LEVEL = 0;
 let gameLoop = new GameLoop(updateGame);
 let gameLoader = new Loader();
