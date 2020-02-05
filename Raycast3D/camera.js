@@ -10,7 +10,7 @@ const HALF_WALL_SIZE = Math.floor(WALL_SIZE / 2);
 
 const
     CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
-    FAR_LIGHT_DISTANCE = WALL_SIZE * 12,
+    FAR_LIGHT_DISTANCE = WALL_SIZE * 8,
     DIRECTION_X = 0,
     DIRECTION_Y = 1;
 
@@ -75,6 +75,20 @@ export class Camera {
         this._raySourcePosition.y = this._y + Math.sin(radians) * this._fov;
     }
 
+    _calculateFade(distance) {
+        if (distance > CLOSE_LIGHT_DISTANCE) {
+            let fade = (distance - CLOSE_LIGHT_DISTANCE) * 100 / FAR_LIGHT_DISTANCE;
+            if (fade > 100) {
+                return 100;
+            }
+            fade = Math.floor(100 * Math.sin(fade* Math.PI / 200));
+            return fade;
+        }
+        else {
+            return 0;
+        }
+    }
+
     drawSceneToScreen(scene, screen) {
         screen.clearBuffer();
         let ray, fade, cameraPointPos;
@@ -85,13 +99,14 @@ export class Camera {
                 if (ray.surfaceHeight < resolution.y) {
                     this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY, i);
                 }
-                fade = 0;
-                if (ray.distanceToSurface > CLOSE_LIGHT_DISTANCE) {
-                    fade = (ray.distanceToSurface - CLOSE_LIGHT_DISTANCE) * 100 / FAR_LIGHT_DISTANCE;
-                    if (fade > 100) {
-                        fade = 100;
-                    }
-                }
+                fade = this._calculateFade(ray.distanceToSurface);
+                // fade = 0;
+                // if (ray.distanceToSurface > CLOSE_LIGHT_DISTANCE) {
+                //     fade = (ray.distanceToSurface - CLOSE_LIGHT_DISTANCE) * 100 / FAR_LIGHT_DISTANCE;
+                //     if (fade > 100) {
+                //         fade = 100;
+                //     }
+                // }
                 screen.drawLineFromTextureInPosition(ray.surface, ray.surfaceHeight, ray.positionOnSurface, i, fade);
             }
         }
@@ -323,15 +338,16 @@ export class Camera {
             let surfaceX = x % WALL_SIZE;
             let surfaceY = y % WALL_SIZE;
             [ceiling, floor] = scene.getFloorAndCeiling(tileX, tileY);
+            let fade = this._calculateFade(floorHypotenuse); // temp
             if (ceiling != undefined) {
                 textureX = Math.floor((surfaceX * ceiling.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * ceiling.height) / WALL_SIZE);
-                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, linePos, i);
+                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, linePos, i, fade); // fade id temp
             }
             if (floor != undefined) {
                 textureX = Math.floor((surfaceX * floor.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * floor.height) / WALL_SIZE);
-                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, linePos, floorTop + j);
+                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, linePos, floorTop + j, fade); // fade is temp
             }
         }
     }

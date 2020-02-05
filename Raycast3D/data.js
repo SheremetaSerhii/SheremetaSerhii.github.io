@@ -17,8 +17,8 @@ const
 
 export const RESOLUTION_ = {
     // X: 160, Y: 120
-    X: 240, Y: 180
-    // X: 320, Y: 240
+    // X: 240, Y: 180
+    X: 320, Y: 240
     // X: 480, Y: 360
     // X: 640, Y: 480
     // X: 1120, Y: 840
@@ -41,8 +41,10 @@ export const IMG_ = {
     TEX02: { I: 2, NAME: "res/wall02.png" },
     TEX03: { I: 3, NAME: "res/wall03.png" },
     TEX04: { I: 4, NAME: "res/wall04.png" },
-    TEX05: { I: 5, NAME: "res/floor02.png" },
-    TEX06: { I: 6, NAME: "res/ceiling01.png" }
+    TEX05: { I: 5, NAME: "res/floor01.png" },
+    TEX06: { I: 6, NAME: "res/ceiling03.png" },
+    TEX07: { I: 7, NAME: "res/floor02.png" },
+    TEX08: { I: 8, NAME: "res/ceiling01.png" }
 }
 
 export const LEVEL_DATA = [
@@ -51,7 +53,7 @@ export const LEVEL_DATA = [
         startLook: LOOK_.UP,
         sizeX: 32,
         sizeY: 32,
-        walls: [IMG_.TEX01.I, IMG_.TEX02.I, IMG_.TEX03.I, IMG_.TEX04.I, IMG_.TEX05.I, IMG_.TEX06.I], // TEX05 and TEX06 is temporary yet
+        walls: [IMG_.TEX01.I, IMG_.TEX02.I, IMG_.TEX03.I, IMG_.TEX04.I, IMG_.TEX05.I, IMG_.TEX06.I, IMG_.TEX07.I, IMG_.TEX08.I], // TEX05 - TEX08 is temporary yet
         map: [
             //0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
             [__, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, __, W2, W2, W2, W2, W2, W2, W2, W2, W4, W4, W4, W4, W4, W4, W4, W4], // 0
