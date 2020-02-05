@@ -3,6 +3,8 @@
 import { RESOLUTION_ } from "./data.js";
 import { RADIAN_MOD } from "./data.js";
 
+export let resolution = undefined;
+
 export function disableImageSmoothing(ctx) {
     ctx.oImageSmoothingEnabled = false;
     ctx.msImageSmoothingEnabled = false;
@@ -11,7 +13,16 @@ export function disableImageSmoothing(ctx) {
     ctx.imageSmoothingEnabled = false;
 }
 
-export let resolution = undefined;
+export function copyPixel(src, srcX, srcY, dst, dstX, dstY) {
+    // let pixel = src.getImageData(srcX, srcY, 1, 1);
+    // dst.putImageData(pixel, dstX, dstY);
+    let srcPos = (srcY * src.width * 4) + (srcX * 4);
+    let dstPos = (dstY * dst.width * 4) + (dstX * 4);
+    dst.data[dstPos] = src.data[srcPos];         // Red
+    dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
+    dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
+    dst.data[dstPos + 3] = src.data[srcPos + 3]; // alpha
+}
 
 export class Screen {
 
@@ -92,10 +103,15 @@ export class Screen {
         }
     }
 
-    drawCeilingAndFloorLineInPosition(lineTexture, lineLength, dstPos) {
-        let floorTopOffset = this._resolution.y - lineLength;
-        this._bufferContext.drawImage(lineTexture, 0, 0, 1, lineLength, dstPos, 0, 1, lineLength); //ceiling
-        this._bufferContext.drawImage(lineTexture, 1, 0, 1, lineLength, dstPos, floorTopOffset, 1, lineLength); //floor
+    // drawCeilingAndFloorLineInPosition(lineTexture, lineLength, dstPos) {
+    //     let floorTopOffset = this._resolution.y - lineLength;
+    //     this._bufferContext.drawImage(lineTexture, 0, 0, 1, lineLength, dstPos, 0, 1, lineLength); //ceiling
+    //     this._bufferContext.drawImage(lineTexture, 1, 0, 1, lineLength, dstPos, floorTopOffset, 1, lineLength); //floor
+    //     //must add some fade later
+    // }
+
+    drawCeilingAndFloorLineInPosition(lineTexture, dstPos) {
+        this._bufferContext.putImageData(lineTexture, dstPos, 0);
         //must add some fade later
     }
 

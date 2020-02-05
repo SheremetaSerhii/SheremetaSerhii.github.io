@@ -83,7 +83,7 @@ export class Map {
         return (this.isWall(x, y) ? this._data.textureData[this.getTile(x, y) - 1] : undefined);
     }
 
-    getFloorAndCeiling(x, y) { 
+    getFloorAndCeiling(x, y) {
         // temporary things here yet:
         let floor = this._data.textureData[this._data.textureData.length - 2];
         let ceiling = this._data.textureData[this._data.textureData.length - 1];
@@ -130,15 +130,22 @@ export class Textures {
         }
     }
 
-    // _makeCanvasFromImages() {
-    //     this._texturesContext = [];
-    //     this._texturesData = [];
-    //     let ctx, data;
-    //     for (let i = 0; i < this._totalImagesQuantity; i++) {
-    //         ctx = this._textures[i].getContext("2d");
-    //         data = ctx.getImageData()
-    //     }
-    // }
+    _makeCanvasFromImages() {
+        this._texturesContext = [];
+        this._texturesData = [];
+        let canvas, ctx;
+        for (let i = 0; i < this._totalImagesQuantity; i++) {
+            canvas = document.createElement("canvas");
+            canvas.width = this._textures[i].width;
+            canvas.height = this._textures[i].height;
+            ctx = canvas.getContext("2d");
+            ctx.drawImage(this._textures[i], 0, 0);
+            this._textures[i] = canvas;
+            this._textures[i].ctx = ctx;
+            this._textures[i].imageData = ctx.getImageData(0, 0, this._textures[i].width, this._textures[i].height);
+            // this._textures[i].imageData = ctx.createImageData(this._textures[i].width, this._textures[i].height);
+        }
+    }
 
     setCallback(callbackFunction) {
         if (typeof callbackFunction === "function") {
@@ -152,6 +159,7 @@ export class Textures {
     _loadImageEvent() {
         this._texturesCounter++;
         if (this._texturesCounter >= this._totalImagesQuantity) {
+            this._makeCanvasFromImages();
             this._callbackFunction();
         }
     }
@@ -176,9 +184,9 @@ export class Loader {
         this._textures = new Textures();
         this._map = new Map();
         this._player = new Player(0, 0, 0, playerSpeed, playerSize, this._map);
-        this._textures.setCallback(this._startGameLoopFunction);
+        this._textures.setCallback(() => { this.loadLevel(startLevelN); this._startGameLoopFunction(); });
         this._textures.loadTextures();
-        this.loadLevel(startLevelN);
+        // this.loadLevel(startLevelN);
         return [this._textures, this._map, this._player];
     }
 

@@ -4,6 +4,9 @@ import { WALL_SIZE } from "./data.js";
 import { RADIAN_MOD } from "./data.js";
 import { resolution } from "./screen.js";
 import { disableImageSmoothing } from "./screen.js";
+import { copyPixel } from "./screen.js";
+
+const HALF_WALL_SIZE = Math.floor(WALL_SIZE / 2);
 
 const
     CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
@@ -28,7 +31,7 @@ export class Camera {
     _raySourcePosition = { x: 0, y: 0 };
     _floorAndCeilingCanvas = undefined;
     _floorAndCeilingContext = undefined;
-    // _floorAndCeilingData = undefined;
+    _floorAndCeilingData = undefined;
 
     constructor(x, y, angle) {
         this.setCameraPosition(x, y, angle);
@@ -50,12 +53,13 @@ export class Camera {
 
     _resetFloorAndCeilingData() {
         this._floorAndCeilingCanvas = document.createElement("canvas");
-        this._floorAndCeilingCanvas.width = 2;
-        this._floorAndCeilingCanvas.height = Math.floor(resolution.y / 2);
+        // this._floorAndCeilingCanvas.width = 2;
+        // this._floorAndCeilingCanvas.height = Math.floor(resolution.y / 2);
         this._floorAndCeilingContext = this._floorAndCeilingCanvas.getContext("2d");
         this._floorAndCeilingContext.alpha = false;
         disableImageSmoothing(this._floorAndCeilingContext);
         // this._floorAndCeilingData = this._floorAndCeilingContext.createImageData(2, Math.floor(resolution.y / 2));
+        this._floorAndCeilingData = this._floorAndCeilingContext.createImageData(1, resolution.y);
         this._floorAndCeilingContext.fillStyle = "rgb(0,50,0)";
         this._floorAndCeilingContext.fillRect(0, 0, this._floorAndCeilingCanvas.width, this._floorAndCeilingCanvas.height);
     }
@@ -78,9 +82,9 @@ export class Camera {
             ray = this._getRay(scene, cameraPointPos);
             if (ray.surface != undefined) {
                 if (ray.surfaceHeight < resolution.y) {
-                    // let height = (resolution.y >>> 1) - Math.floor(ray.surfaceHeight / 2);
-                    let height = this._drawFloorAndCeilingLine(scene, ray.distanceToSurface, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY);
-                    screen.drawCeilingAndFloorLineInPosition(this._floorAndCeilingCanvas, height, i);
+                    // let height = 
+                    this._drawFloorAndCeilingLine(scene, ray.distanceToSurface, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY);
+                    screen.drawCeilingAndFloorLineInPosition(this._floorAndCeilingData, i);
                 }
                 fade = 0;
                 if (ray.distanceToSurface > CLOSE_LIGHT_DISTANCE) {
@@ -305,20 +309,25 @@ export class Camera {
         //     floor: false,
         //     ceiling: false
         // }
-        let controlHypotenuse = Math.sqrt((controlSizeX * controlSizeX) + (controlSizeY * controlSizeY));
+        let controlHypotenuse = /*this._fov;/*/Math.sqrt((controlSizeX * controlSizeX) + (controlSizeY * controlSizeY));
         let xCalcMultiplier = controlSizeX / controlHypotenuse;
         let yCalcMultiplier = controlSizeY / controlHypotenuse;
         //result.height = (resolution.y >>> 1) - Math.floor(hPixels / 2);
-        let height = (resolution.y >>> 1) - Math.floor(hPixels / 2);
+        let halfHPixels = Math.floor(hPixels / 2);
+        let height = (resolution.y >>> 1) - halfHPixels + 1;
         let multiplierToRealSize = this._height / resolution.y;
         let hReal = Math.round(hPixels * multiplierToRealSize);
-        let m = ((distanceToCamera * WALL_SIZE) / (WALL_SIZE - hReal)) - distanceToCamera;
-        let mXwallsize = WALL_SIZE * m;
+        // let m = ((distanceToCamera * WALL_SIZE) / (WALL_SIZE - hReal)) - distanceToCamera;
+        // let m = this._fov;
+        let m = controlHypotenuse;
+        let mXwallsize = HALF_WALL_SIZE * m;
         let ceiling, floor, textureX, textureY;
+        let floorTop = resolution.y - height;
         for (let i = /*result.*/height - 1, j = 0; i >= 0; i-- , j++) {
             //let h = i * multiplierToRealSize;
-            let h = (hPixels + j) * multiplierToRealSize;
-            let floorHypotenuse = (mXwallsize / h) - m + this._fov;
+            let h = (halfHPixels + j) * multiplierToRealSize;
+            // let floorHypotenuse = (mXwallsize / h) - m + /*this._fov*/controlHypotenuse;
+            let floorHypotenuse = (mXwallsize / h);
             let x = this._x + (xCalcMultiplier * floorHypotenuse);
             let y = this._y + (yCalcMultiplier * floorHypotenuse);
             let tileX = Math.floor(x / WALL_SIZE);
@@ -329,12 +338,12 @@ export class Camera {
             if (ceiling != undefined) {
                 textureX = Math.floor((surfaceX * ceiling.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * ceiling.height) / WALL_SIZE);
-                this._floorAndCeilingContext.drawImage(ceiling, textureX, textureY, 1, 1, 0, i, 1, 1);
+                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, 0, i);
             }
             if (floor != undefined) {
                 textureX = Math.floor((surfaceX * floor.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * floor.height) / WALL_SIZE);
-                // this._floorAndCeilingContext.drawImage(floor, textureX, textureY, 1, 1, 1, j, 1, 1);
+                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, 0, floorTop + j);
             }
             // if (this._isSurface(scene, tileX, tileY)) {
             //     // paste transparent black pixel
@@ -343,7 +352,8 @@ export class Camera {
             //     // paste pixel from texture
             // }
         }
-        return height;//result;
+        // this._floorAndCeilingContext.putImageData(this._floorAndCeilingData, 0, 0);
+        // return height;//result;
     }
 
     // _getFloorHypotenuse(h, m, mXwallsize) {

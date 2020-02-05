@@ -30,7 +30,7 @@ let gameTextures, gameMap, player;
 
 function updateGame() {
     player.movement();
-    gameScreen.fillBlack();
+    // gameScreen.fillBlack();
     player.getCamera().drawSceneToScreen(gameMap, gameScreen);
     gameScreen.drawScreen();
     requestAnimationFrame(updateGame);
