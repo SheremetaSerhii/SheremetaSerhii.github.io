@@ -104,8 +104,6 @@ export class Map {
 export class Textures {
 
     _textures = undefined;
-    // _texturesContext = undefined;
-    // _texturesData = undefined;
     _texturesCounter = 0;
     _totalImagesQuantity = 0;
     _callbackFunction = undefined;
@@ -143,7 +141,6 @@ export class Textures {
             this._textures[i] = canvas;
             this._textures[i].ctx = ctx;
             this._textures[i].imageData = ctx.getImageData(0, 0, this._textures[i].width, this._textures[i].height);
-            // this._textures[i].imageData = ctx.createImageData(this._textures[i].width, this._textures[i].height);
         }
     }
 

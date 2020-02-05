@@ -59,9 +59,10 @@ export class Camera {
         this._floorAndCeilingContext.alpha = false;
         disableImageSmoothing(this._floorAndCeilingContext);
         // this._floorAndCeilingData = this._floorAndCeilingContext.createImageData(2, Math.floor(resolution.y / 2));
-        this._floorAndCeilingData = this._floorAndCeilingContext.createImageData(1, resolution.y);
-        this._floorAndCeilingContext.fillStyle = "rgb(0,50,0)";
-        this._floorAndCeilingContext.fillRect(0, 0, this._floorAndCeilingCanvas.width, this._floorAndCeilingCanvas.height);
+        this._floorAndCeilingData = this._floorAndCeilingContext.createImageData(resolution.x/*1*/, resolution.y);
+        this._floorAndCeilingData.data.fill(255);
+        // this._floorAndCeilingContext.fillStyle = "rgb(0,50,0)";
+        // this._floorAndCeilingContext.fillRect(0, 0, this._floorAndCeilingCanvas.width, this._floorAndCeilingCanvas.height);
     }
 
     setCameraPosition(x, y, angle) {
@@ -75,16 +76,14 @@ export class Camera {
     }
 
     drawSceneToScreen(scene, screen) {
+        screen.clearBuffer();
         let ray, fade, cameraPointPos;
         for (let i = 0; i < resolution.x; i++) {
             cameraPointPos = this._getCameraPointPos(i);
-            //ray = this._getRay(scene, i);
             ray = this._getRay(scene, cameraPointPos);
             if (ray.surface != undefined) {
                 if (ray.surfaceHeight < resolution.y) {
-                    // let height = 
-                    this._drawFloorAndCeilingLine(scene, ray.distanceToSurface, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY);
-                    screen.drawCeilingAndFloorLineInPosition(this._floorAndCeilingData, i);
+                    this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY, i);
                 }
                 fade = 0;
                 if (ray.distanceToSurface > CLOSE_LIGHT_DISTANCE) {
@@ -96,6 +95,7 @@ export class Camera {
                 screen.drawLineFromTextureInPosition(ray.surface, ray.surfaceHeight, ray.positionOnSurface, i, fade);
             }
         }
+        screen.drawToBackgroundBuffer(this._floorAndCeilingData);
     }
 
     _preliminaryCalculatedXinc = undefined;
@@ -303,33 +303,21 @@ export class Camera {
         return scene.isWall(x, y);
     }
 
-    _drawFloorAndCeilingLine(scene, distanceToCamera, hPixels, controlSizeX, controlSizeY) {
-        // let result = {
-        //     height: 0,
-        //     floor: false,
-        //     ceiling: false
-        // }
-        let controlHypotenuse = /*this._fov;/*/Math.sqrt((controlSizeX * controlSizeX) + (controlSizeY * controlSizeY));
+    _drawFloorAndCeilingLine(scene, hPixels, controlSizeX, controlSizeY, linePos) {
+        let controlHypotenuse = Math.sqrt((controlSizeX * controlSizeX) + (controlSizeY * controlSizeY));
         let xCalcMultiplier = controlSizeX / controlHypotenuse;
         let yCalcMultiplier = controlSizeY / controlHypotenuse;
-        //result.height = (resolution.y >>> 1) - Math.floor(hPixels / 2);
         let halfHPixels = Math.floor(hPixels / 2);
         let height = (resolution.y >>> 1) - halfHPixels + 1;
         let multiplierToRealSize = this._height / resolution.y;
-        let hReal = Math.round(hPixels * multiplierToRealSize);
-        // let m = ((distanceToCamera * WALL_SIZE) / (WALL_SIZE - hReal)) - distanceToCamera;
-        // let m = this._fov;
-        let m = controlHypotenuse;
-        let mXwallsize = HALF_WALL_SIZE * m;
+        let mXwallsize = HALF_WALL_SIZE * controlHypotenuse;
         let ceiling, floor, textureX, textureY;
         let floorTop = resolution.y - height;
-        for (let i = /*result.*/height - 1, j = 0; i >= 0; i-- , j++) {
-            //let h = i * multiplierToRealSize;
+        for (let i = height - 1, j = 0; i >= 0; i-- , j++) {
             let h = (halfHPixels + j) * multiplierToRealSize;
-            // let floorHypotenuse = (mXwallsize / h) - m + /*this._fov*/controlHypotenuse;
             let floorHypotenuse = (mXwallsize / h);
-            let x = this._x + (xCalcMultiplier * floorHypotenuse);
-            let y = this._y + (yCalcMultiplier * floorHypotenuse);
+            let x = this._raySourcePosition.x + (xCalcMultiplier * floorHypotenuse);
+            let y = this._raySourcePosition.y + (yCalcMultiplier * floorHypotenuse);
             let tileX = Math.floor(x / WALL_SIZE);
             let tileY = Math.floor(y / WALL_SIZE);
             let surfaceX = x % WALL_SIZE;
@@ -338,26 +326,14 @@ export class Camera {
             if (ceiling != undefined) {
                 textureX = Math.floor((surfaceX * ceiling.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * ceiling.height) / WALL_SIZE);
-                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, 0, i);
+                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, linePos, i);
             }
             if (floor != undefined) {
                 textureX = Math.floor((surfaceX * floor.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * floor.height) / WALL_SIZE);
-                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, 0, floorTop + j);
+                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, linePos, floorTop + j);
             }
-            // if (this._isSurface(scene, tileX, tileY)) {
-            //     // paste transparent black pixel
-            // }
-            // else {
-            //     // paste pixel from texture
-            // }
         }
-        // this._floorAndCeilingContext.putImageData(this._floorAndCeilingData, 0, 0);
-        // return height;//result;
     }
-
-    // _getFloorHypotenuse(h, m, mXwallsize) {
-    //     return (mXwallsize / h) - m;
-    // }
 
 }

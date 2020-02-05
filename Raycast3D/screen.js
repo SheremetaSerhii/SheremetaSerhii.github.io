@@ -14,14 +14,12 @@ export function disableImageSmoothing(ctx) {
 }
 
 export function copyPixel(src, srcX, srcY, dst, dstX, dstY) {
-    // let pixel = src.getImageData(srcX, srcY, 1, 1);
-    // dst.putImageData(pixel, dstX, dstY);
     let srcPos = (srcY * src.width * 4) + (srcX * 4);
     let dstPos = (dstY * dst.width * 4) + (dstX * 4);
     dst.data[dstPos] = src.data[srcPos];         // Red
     dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
     dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
-    dst.data[dstPos + 3] = src.data[srcPos + 3]; // alpha
+    // dst.data[dstPos + 3] = src.data[srcPos + 3]; // alpha
 }
 
 export class Screen {
@@ -30,6 +28,8 @@ export class Screen {
     _surfaceContext = undefined;
     _buffer = undefined;
     _bufferContext = undefined;
+    _backgroundBuffer = undefined;
+    _backgroundBufferContext = undefined;
     _resolution = undefined;
 
     constructor(canvasObj) {
@@ -46,21 +46,33 @@ export class Screen {
             alert("Your browser does not support canvas.");
         }
 
-        this._buffer = document.createElement("canvas");
         this._resolution = {
             x: RESOLUTION_.X,
             y: RESOLUTION_.Y
         }
         resolution = this._resolution;
+        this._buffer = document.createElement("canvas");
         this._buffer.width = this._resolution.x;
         this._buffer.height = this._resolution.y;
         this._bufferContext = this._buffer.getContext("2d");
-        this._bufferContext.alpha = false;
+        // this._bufferContext.alpha = false;
         disableImageSmoothing(this._bufferContext);
+        this._backgroundBuffer = document.createElement("canvas");
+        this._backgroundBuffer.width = this._resolution.x;
+        this._backgroundBuffer.height = this._resolution.y;
+        this._backgroundBufferContext = this._backgroundBuffer.getContext("2d");
+        this._backgroundBufferContext.alpha = false;
+        disableImageSmoothing(this._backgroundBufferContext);
     }
 
     drawScreen() {
-        this._surfaceContext.drawImage(this._buffer, 0, 0, this._surface.width, this._surface.height);
+        // this._surfaceContext.drawImage(this._buffer, 0, 0, this._surface.width, this._surface.height);
+        this._backgroundBufferContext.drawImage(this._buffer, 0, 0);
+        this._surfaceContext.drawImage(this._backgroundBuffer, 0, 0, this._surface.width, this._surface.height);
+    }
+
+    drawToBackgroundBuffer(src) {
+        this._backgroundBufferContext.putImageData(src, 0, 0);
     }
 
     // getScreenBuffer() {
@@ -70,6 +82,10 @@ export class Screen {
     fillBlack() {
         this._bufferContext.fillStyle = "rgb(0,0,0)";
         this._bufferContext.fillRect(0, 0, this._resolution.x, this._resolution.y);
+    }
+
+    clearBuffer() {
+        this._bufferContext.clearRect(0, 0, this._resolution.x, this._resolution.y);
     }
 
     drawRotatedImage(image, x, y, angle) {
