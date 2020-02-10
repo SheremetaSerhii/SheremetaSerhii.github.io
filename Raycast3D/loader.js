@@ -86,7 +86,7 @@ export class Map {
     getFloorAndCeiling(x, y) {
         // temporary things here yet:
         let floor, ceiling;
-        if (y > Math.floor(this._data.mapData.sizeY / 2) + 3) {
+        if (y > 18/*Math.floor(this._data.mapData.sizeY / 2) + 3*/) {
             floor = this._data.textureData[this._data.textureData.length - 2];
             ceiling = this._data.textureData[this._data.textureData.length - 1];
         }

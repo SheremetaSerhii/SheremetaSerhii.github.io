@@ -22,9 +22,9 @@ const
 
 export class Camera {
 
-    _width = WALL_SIZE / /*4;/*/2 - 4 * (WALL_SIZE >>> 5);
+    _width = WALL_SIZE / 2 - 4 * (WALL_SIZE >>> 5);
     _height = 0;
-    _fov = 8 * (WALL_SIZE >>> 5);//*5.5;/*/11;
+    _fov = 8 * (WALL_SIZE >>> 5);
     _x = 0;
     _y = 0;
     _angle = 0;
@@ -32,6 +32,7 @@ export class Camera {
     _floorAndCeilingCanvas = undefined;
     _floorAndCeilingContext = undefined;
     _floorAndCeilingData = undefined;
+    _multiplierToRealSize = 1;
 
     constructor(x, y, angle) {
         this.setCameraPosition(x, y, angle);
@@ -42,6 +43,7 @@ export class Camera {
 
     _calculateCameraHeight() {
         this._height = (resolution.y * this._width) / resolution.x;
+        this._multiplierToRealSize = this._height / resolution.y;
     }
 
     setCameraView(width, fov) {
@@ -81,7 +83,7 @@ export class Camera {
             if (fade > 100) {
                 return 100;
             }
-            fade = Math.floor(100 * Math.sin(fade* Math.PI / 200));
+            fade = Math.floor(100 * Math.sin(fade * Math.PI / 200));
             return fade;
         }
         else {
@@ -94,10 +96,10 @@ export class Camera {
         let ray, fade, cameraPointPos;
         for (let i = 0; i < resolution.x; i++) {
             cameraPointPos = this._getCameraPointPos(i);
-            ray = this._getRay(scene, cameraPointPos);
+            ray = this._getRay(scene, cameraPointPos, i);
             if (ray.surface != undefined) {
                 if (ray.surfaceHeight < resolution.y) {
-                    this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY, i);
+                    this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, i);
                 }
                 fade = this._calculateFade(ray.distanceToSurface);
                 // fade = 0;
@@ -117,26 +119,64 @@ export class Camera {
     _preliminaryCalculatedYinc = undefined;
     _prelimCalcSurfaceHeight_Pt1 = undefined;
     _prelimCalcSurfaceHeight_Pt2 = undefined;
+    _prelimCalcControlSizeX = undefined;
+    _prelimCalcControlSizeY = undefined;
+    // _prelimCalcControlHypotenuse = undefined;
+    _prelimCalcFloorXinc = undefined;
+    _prelimCalcFloorYinc = undefined;
+    _prelimCalcFloorDistance = undefined;
 
     _preliminaryCalculations() {
-        this._preliminaryCalculatedXinc = [];
-        this._preliminaryCalculatedYinc = [];
-        this._preliminaryCalculatedXinc.length = resolution.x;
-        this._preliminaryCalculatedYinc.length = resolution.x;
+        let radians;
+        this._preliminaryCalculatedXinc = new Array(resolution.x);
+        this._preliminaryCalculatedYinc = new Array(resolution.x);
         for (let j = 0; j < resolution.x; j++) {
             let cameraPoint = (j * this._width) / resolution.x - (this._width >>> 1);
-            this._preliminaryCalculatedXinc[j] = [];
-            this._preliminaryCalculatedYinc[j] = [];
-            this._preliminaryCalculatedXinc[j].length = 360;
-            this._preliminaryCalculatedYinc[j].length = 360;
+            this._preliminaryCalculatedXinc[j] = new Array(360);
+            this._preliminaryCalculatedYinc[j] = new Array(360);
             for (let i = 0; i < 360; i++) {
-                let radians = RADIAN_MOD * i;
+                radians = RADIAN_MOD * i;
                 this._preliminaryCalculatedXinc[j][i] = Math.cos(radians) * cameraPoint;
                 this._preliminaryCalculatedYinc[j][i] = Math.sin(radians) * cameraPoint;
             }
         }
         this._prelimCalcSurfaceHeight_Pt1 = (WALL_SIZE * this._height * resolution.x) / this._width;
         this._prelimCalcSurfaceHeight_Pt2 = this._height / this._fov;
+        // control sizes and floor
+        this._prelimCalcControlSizeX = new Array(resolution.x);
+        this._prelimCalcControlSizeY = new Array(resolution.x);
+        // this._prelimCalcControlHypotenuse = new Array(resolution.x);
+        this._prelimCalcFloorXinc = new Array(resolution.x);
+        this._prelimCalcFloorYinc = new Array(resolution.x);
+        this._prelimCalcFloorDistance = new Array(resolution.x);
+        let halfResolutionY = Math.floor(resolution.y / 2);
+        for (let j = 0; j < resolution.x; j++) {
+            this._prelimCalcControlSizeX[j] = new Array(360);
+            this._prelimCalcControlSizeY[j] = new Array(360);
+            // this._prelimCalcControlHypotenuse[j] = new Array(360);
+            this._prelimCalcFloorXinc[j] = new Array(360);
+            this._prelimCalcFloorYinc[j] = new Array(360);
+            this._prelimCalcFloorDistance[j] = new Array(360);
+            for (let i = 0; i < 360; i++) {
+                radians = RADIAN_MOD * (i + 90) % 360;
+                let tempSourcePositionX = Math.cos(radians) * this._fov;
+                let tempSourcePositionY = Math.sin(radians) * this._fov;
+                this._angle = i;
+                this._prelimCalcControlSizeX[j][i] = this._preliminaryCalculatedXinc[j][i] - tempSourcePositionX;
+                this._prelimCalcControlSizeY[j][i] = this._preliminaryCalculatedYinc[j][i] - tempSourcePositionY;
+                // this._prelimCalcControlHypotenuse[j][i] = Math.sqrt(Math.pow(this._prelimCalcControlSizeX[j][i], 2) + Math.pow(this._prelimCalcControlSizeY[j][i], 2));
+                let controlHypotenuse = Math.sqrt(Math.pow(this._prelimCalcControlSizeX[j][i], 2) + Math.pow(this._prelimCalcControlSizeY[j][i], 2));
+                this._prelimCalcFloorXinc[j][i] = new Array(halfResolutionY + 1);
+                this._prelimCalcFloorYinc[j][i] = new Array(halfResolutionY + 1);
+                this._prelimCalcFloorDistance[j][i] = new Array(halfResolutionY + 1);
+                for (let k = 0; k <= halfResolutionY; k++) {
+                    let mult = HALF_WALL_SIZE / ((halfResolutionY + 1 - k) * this._multiplierToRealSize);
+                    this._prelimCalcFloorXinc[j][i][k] = this._prelimCalcControlSizeX[j][i] * mult;
+                    this._prelimCalcFloorYinc[j][i][k] = this._prelimCalcControlSizeY[j][i] * mult;
+                    this._prelimCalcFloorDistance[j][i][k] = controlHypotenuse * mult;
+                }
+            }
+        }
     }
 
     _getCameraPointPos(rayIndex) {
@@ -146,7 +186,7 @@ export class Camera {
         return cameraPointPos;
     }
 
-    _getRay(scene, cameraPointPos/*rayIndex*/) {
+    _getRay(scene, cameraPointPos, rayIndex) {
         let ray = {
             surface: undefined,
             surfaceHeight: 0,
@@ -155,15 +195,8 @@ export class Camera {
             controlSizeX: 0,
             controlSizeY: 0
         };
-        // let cameraPoint = (rayIndex * this._width) / resolution.x - (this._width >>> 1);
-        //////let cameraPointPos = { x: 0, y: 0 };
         let rayDstPos = { x: 0, y: 0 };
         let oldRayDstPos = { x: 0, y: 0 };
-        /*let radians = RADIAN_MOD * this._angle;
-        cameraPointPos.x = this._x + Math.cos(radians) * cameraPoint;
-        cameraPointPos.y = this._y + Math.sin(radians) * cameraPoint;*/
-        //////cameraPointPos.x = this._x + this._preliminaryCalculatedXinc[rayIndex][this._angle];
-        //////cameraPointPos.y = this._y + this._preliminaryCalculatedYinc[rayIndex][this._angle];
         [rayDstPos.x, rayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
         let xInc = cameraPointPos.x >= this._raySourcePosition.x ? WALL_SIZE : -WALL_SIZE;
         let yInc = cameraPointPos.y >= this._raySourcePosition.y ? WALL_SIZE : -WALL_SIZE;
@@ -171,26 +204,24 @@ export class Camera {
         [rightLimit, bottomLimit] = scene.getMapSize();
         rightLimit *= WALL_SIZE;
         bottomLimit *= WALL_SIZE;
-        let controlSizeX = cameraPointPos.x - this._raySourcePosition.x;
-        let controlSizeY = cameraPointPos.y - this._raySourcePosition.y;
-        ray.controlSizeX = controlSizeX;
-        ray.controlSizeY = controlSizeY;
+        ray.controlSizeX = this._prelimCalcControlSizeX[rayIndex][this._angle];
+        ray.controlSizeY = this._prelimCalcControlSizeY[rayIndex][this._angle];
         let traceEndingPosition = undefined;
         // ray tracing:
-        if (Math.abs(controlSizeX) < Math.abs(controlSizeY)) {
+        if (Math.abs(ray.controlSizeX) < Math.abs(ray.controlSizeY)) {
             // go through Y coordinate first:
             if (yInc > 0 && rayDstPos.y % WALL_SIZE > 0) {
                 rayDstPos.y += WALL_SIZE;
             }
             rayDstPos.y = Math.floor(rayDstPos.y / WALL_SIZE) * WALL_SIZE;
-            rayDstPos.x = this._getEndPosA(controlSizeX, controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, rayDstPos.y);
+            rayDstPos.x = this._getEndPosA(ray.controlSizeX, ray.controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, rayDstPos.y);
             [oldRayDstPos.x, oldRayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
             while (rayDstPos.x > 0 && rayDstPos.x < rightLimit && rayDstPos.y > 0 && rayDstPos.y < bottomLimit && traceEndingPosition == undefined) {
-                traceEndingPosition = this._getTraceEndingPosition(scene, oldRayDstPos.x, oldRayDstPos.y, rayDstPos.x, rayDstPos.y, DIRECTION_Y, controlSizeX, controlSizeY);
+                traceEndingPosition = this._getTraceEndingPosition(scene, oldRayDstPos.x, oldRayDstPos.y, rayDstPos.x, rayDstPos.y, DIRECTION_Y, ray.controlSizeX, ray.controlSizeY);
                 if (traceEndingPosition == undefined) {
                     [oldRayDstPos.x, oldRayDstPos.y] = [rayDstPos.x, rayDstPos.y];
                     rayDstPos.y += yInc;
-                    rayDstPos.x = this._getEndPosA(controlSizeX, controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, rayDstPos.y);
+                    rayDstPos.x = this._getEndPosA(ray.controlSizeX, ray.controlSizeY, this._raySourcePosition.x, this._raySourcePosition.y, rayDstPos.y);
                 }
             }
         }
@@ -200,14 +231,14 @@ export class Camera {
                 rayDstPos.x += WALL_SIZE;
             }
             rayDstPos.x = Math.floor(rayDstPos.x / WALL_SIZE) * WALL_SIZE;
-            rayDstPos.y = this._getEndPosA(controlSizeY, controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, rayDstPos.x);
+            rayDstPos.y = this._getEndPosA(ray.controlSizeY, ray.controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, rayDstPos.x);
             [oldRayDstPos.x, oldRayDstPos.y] = [cameraPointPos.x, cameraPointPos.y];
             while (rayDstPos.x > 0 && rayDstPos.x < rightLimit && rayDstPos.y > 0 && rayDstPos.y < bottomLimit && traceEndingPosition == undefined) {
-                traceEndingPosition = this._getTraceEndingPosition(scene, oldRayDstPos.x, oldRayDstPos.y, rayDstPos.x, rayDstPos.y, DIRECTION_X, controlSizeX, controlSizeY);
+                traceEndingPosition = this._getTraceEndingPosition(scene, oldRayDstPos.x, oldRayDstPos.y, rayDstPos.x, rayDstPos.y, DIRECTION_X, ray.controlSizeX, ray.controlSizeY);
                 if (traceEndingPosition == undefined) {
                     [oldRayDstPos.x, oldRayDstPos.y] = [rayDstPos.x, rayDstPos.y];
                     rayDstPos.x += xInc;
-                    rayDstPos.y = this._getEndPosA(controlSizeY, controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, rayDstPos.x);
+                    rayDstPos.y = this._getEndPosA(ray.controlSizeY, ray.controlSizeX, this._raySourcePosition.y, this._raySourcePosition.x, rayDstPos.x);
                 }
             }
         }
@@ -318,36 +349,34 @@ export class Camera {
         return scene.isWall(x, y);
     }
 
-    _drawFloorAndCeilingLine(scene, hPixels, controlSizeX, controlSizeY, linePos) {
-        let controlHypotenuse = Math.sqrt((controlSizeX * controlSizeX) + (controlSizeY * controlSizeY));
-        let xCalcMultiplier = controlSizeX / controlHypotenuse;
-        let yCalcMultiplier = controlSizeY / controlHypotenuse;
-        let halfHPixels = Math.floor(hPixels / 2);
+    _drawFloorAndCeilingLine(scene, hPixels, /*controlSizeX, controlSizeY,*/ rayIndex) {
+        let halfHPixels = hPixels >>> 1;
         let height = (resolution.y >>> 1) - halfHPixels + 1;
-        let multiplierToRealSize = this._height / resolution.y;
-        let mXwallsize = HALF_WALL_SIZE * controlHypotenuse;
         let ceiling, floor, textureX, textureY;
         let floorTop = resolution.y - height;
-        for (let i = height - 1, j = 0; i >= 0; i-- , j++) {
-            let h = (halfHPixels + j) * multiplierToRealSize;
-            let floorHypotenuse = (mXwallsize / h);
-            let x = this._raySourcePosition.x + (xCalcMultiplier * floorHypotenuse);
-            let y = this._raySourcePosition.y + (yCalcMultiplier * floorHypotenuse);
-            let tileX = Math.floor(x / WALL_SIZE);
-            let tileY = Math.floor(y / WALL_SIZE);
-            let surfaceX = x % WALL_SIZE;
-            let surfaceY = y % WALL_SIZE;
+        --height;
+        for (let i = height; i >= 0; i--) {
+            let x = this._raySourcePosition.x + this._prelimCalcFloorXinc[rayIndex][this._angle][i];
+            let y = this._raySourcePosition.y + this._prelimCalcFloorYinc[rayIndex][this._angle][i];
+            // let tileX = Math.floor(x / WALL_SIZE);
+            // let tileY = Math.floor(y / WALL_SIZE);
+            // let surfaceX = x % WALL_SIZE;
+            // let surfaceY = y % WALL_SIZE;
+            let tileX = x >>> 8;
+            let tileY = y >>> 8;
+            let surfaceX = x & 255;
+            let surfaceY = y & 255;
             [ceiling, floor] = scene.getFloorAndCeiling(tileX, tileY);
-            let fade = this._calculateFade(floorHypotenuse); // temp
+            let fade = this._calculateFade(this._prelimCalcFloorDistance[rayIndex][this._angle][i]); // temp
             if (ceiling != undefined) {
                 textureX = Math.floor((surfaceX * ceiling.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * ceiling.height) / WALL_SIZE);
-                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, linePos, i, fade); // fade id temp
+                copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, rayIndex, i, fade); // fade id temp
             }
             if (floor != undefined) {
                 textureX = Math.floor((surfaceX * floor.width) / WALL_SIZE);
                 textureY = Math.floor((surfaceY * floor.height) / WALL_SIZE);
-                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, linePos, floorTop + j, fade); // fade is temp
+                copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, rayIndex, floorTop + height - i, fade); // fade is temp
             }
         }
     }
