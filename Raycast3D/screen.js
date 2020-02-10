@@ -14,23 +14,31 @@ export function disableImageSmoothing(ctx) {
 }
 
 export function copyPixel(src, srcX, srcY, dst, dstX, dstY, fade) {
-    let srcPos = (srcY * src.width * 4) + (srcX * 4);
-    let dstPos = (dstY * dst.width * 4) + (dstX * 4);
+    let srcPos = ((srcY * src.width) << 2) + (srcX << 2);
+    let dstPos = ((dstY * dst.width) << 2) + (dstX << 2);
     // dst.data[dstPos] = src.data[srcPos];         // Red
     // dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
     // dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
     // // dst.data[dstPos + 3] = src.data[srcPos + 3]; // alpha
-    if (fade == 0) {
-        dst.data[dstPos] = src.data[srcPos];         // Red
-        dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
-        dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
-    }
-    else {
-        let antifade = 100 - fade;
-        dst.data[dstPos] = ((src.data[srcPos] * antifade) + (12 * fade)) / 100;         // Red
-        dst.data[dstPos + 1] = src.data[srcPos + 1] * antifade / 100; // green
-        dst.data[dstPos + 2] = ((src.data[srcPos + 2] * antifade) + (2 * fade)) / 100; 
-    }
+    // if (fade == 0) {
+    //     dst.data[dstPos] = src.data[srcPos];         // Red
+    //     dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
+    //     dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
+    // }
+    // else {
+        // if (fade == 1) {
+        //     dst.data[dstPos] = 12;
+        //     dst.data[dstPos + 1] = 0;
+        //     dst.data[dstPos + 2] = 2;
+        // }
+        // else {
+            // let antifade = 100 - fade;
+            let antifade = 1 - fade;
+            dst.data[dstPos] = ((src.data[srcPos] * antifade) + (12 * fade)) /*/ 100*/;         // Red
+            dst.data[dstPos + 1] = src.data[srcPos + 1] * antifade /*/ 100*/; // green
+            dst.data[dstPos + 2] = ((src.data[srcPos + 2] * antifade) + (2 * fade)) /*/ 100*/;
+        // }
+    // }
 }
 
 export class Screen {

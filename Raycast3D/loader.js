@@ -148,6 +148,8 @@ export class Textures {
             this._textures[i] = canvas;
             this._textures[i].ctx = ctx;
             this._textures[i].imageData = ctx.getImageData(0, 0, this._textures[i].width, this._textures[i].height);
+            this._textures[i].sizeMultiplierX = this._textures[i].width / WALL_SIZE;
+            this._textures[i].sizeMultiplierY = this._textures[i].height / WALL_SIZE;
         }
     }
 
