@@ -16,8 +16,10 @@ export class Map {
             lastWall: 1,
             sizeX: 0,
             sizeY: 0,
-            map: undefined
-        },
+            map: undefined,
+            floorMap: undefined,
+            ceilingMap: undefined
+        }
     }
 
     loadLevel(levelN, textures, player) {
@@ -60,6 +62,17 @@ export class Map {
         }
         player.setPosition(playerPosX, playerPosY, playerAngle);
         this._data.textureData = this._getMapTexturesFromTexturesList(levelN, textures);
+        ////// temporary things ///////
+        this._data.mapData.floorMap = new Array(this._data.mapData.sizeX);
+        this._data.mapData.ceilingMap = new Array(this._data.mapData.sizeX);
+        for (let x = 0; x < this._data.mapData.sizeX; x++) {
+            this._data.mapData.floorMap[x] = new Array(this._data.mapData.sizeY);
+            this._data.mapData.ceilingMap[x] = new Array(this._data.mapData.sizeY);
+            for (let y = 0; y < this._data.mapData.sizeY; y++) {
+                this._data.mapData.floorMap[x][y] = Math.floor(Math.random() * 4) + 4;
+                this._data.mapData.ceilingMap[x][y] = Math.floor(Math.random() * 4) + 4;
+            }
+        }
     }
 
     getMapData() {
@@ -84,15 +97,10 @@ export class Map {
     }
 
     getFloorAndCeiling(x, y) {
-        // temporary things here yet:
         let floor, ceiling;
-        if (y > 18/*Math.floor(this._data.mapData.sizeY / 2) + 3*/) {
-            floor = this._data.textureData[this._data.textureData.length - 2];
-            ceiling = this._data.textureData[this._data.textureData.length - 1];
-        }
-        else {
-            floor = this._data.textureData[this._data.textureData.length - 4];
-            ceiling = this._data.textureData[this._data.textureData.length - 3];
+        if (x > 0 && y > 0 && x < this._data.mapData.sizeX && y < this._data.mapData.sizeY) {
+            ceiling = this._data.textureData[this._data.mapData.ceilingMap[x][y]];
+            floor = this._data.textureData[this._data.mapData.floorMap[x][y]];
         }
         return [ceiling, floor];
     }
