@@ -1,6 +1,7 @@
 "use strict"
 
 export const RADIAN_MOD = Math.PI / 180;
+export const HALF_PI = Math.PI / 2;
 
 export const MAP_INDEX_ = {
     START_PLACE: 100,
@@ -21,6 +22,7 @@ export const RESOLUTION_ = {
     X: 320, Y: 240
     // X: 480, Y: 360
     // X: 640, Y: 480
+    // X: 800, Y: 600
     // X: 1120, Y: 840
     // X: 1280, Y: 960
     // X: 1920, Y: 1080

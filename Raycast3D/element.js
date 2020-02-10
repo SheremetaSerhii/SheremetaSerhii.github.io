@@ -40,10 +40,12 @@ export class GameElement {
 export class MovableElement extends GameElement {
 
     _moveSpeed = 1;
+    _turnSpeed = 2;
 
-    constructor(x, y, angle, moveSpeed) {
+    constructor(x, y, angle, moveSpeed, TurnSpeed) {
         super(x, y, angle);
         this.setMoveSpeed(moveSpeed);
+        this.setTurnSpeed(TurnSpeed);
     }
 
     _getTurnedAngle(baseAngle, turnAngle) {
@@ -62,12 +64,24 @@ export class MovableElement extends GameElement {
         this._moveSpeed = speed;
     }
 
-    turnLeft(turnAngle) {
+    setTurnSpeed(speed) {
+        this._turnSpeed = speed;
+    }
+
+    turnLeftOnAngle(turnAngle) {
         this.setAngle(this._getTurnedAngle(this._angle, -turnAngle));
     }
 
-    turnRight(turnAngle) {
+    turnRightOnAngle(turnAngle) {
         this.setAngle(this._getTurnedAngle(this._angle, turnAngle));
+    }
+
+    turnLeft() {
+        this.setAngle(this._getTurnedAngle(this._angle, -this._turnSpeed));
+    }
+
+    turnRight() {
+        this.setAngle(this._getTurnedAngle(this._angle,this._turnSpeed));
     }
 
     moveForward() {

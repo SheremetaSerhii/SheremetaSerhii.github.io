@@ -2,17 +2,20 @@
 
 import { WALL_SIZE } from "./data.js";
 import { RADIAN_MOD } from "./data.js";
+import { HALF_PI } from "./data.js";
 import { resolution } from "./screen.js";
 import { disableImageSmoothing } from "./screen.js";
-import { copyPixel } from "./screen.js";
+// import { copyPixel } from "./screen.js";
 
 const HALF_WALL_SIZE = Math.floor(WALL_SIZE / 2);
 
 const
     CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
     FAR_LIGHT_DISTANCE = WALL_SIZE * 8,
+    FAR_PLUS_CLOSE_LIGHT_DISTANCE = CLOSE_LIGHT_DISTANCE + FAR_LIGHT_DISTANCE,
     DIRECTION_X = 0,
-    DIRECTION_Y = 1;
+    DIRECTION_Y = 1,
+    FADE_MULTIPLIER = HALF_PI / FAR_LIGHT_DISTANCE;
 
 const
     SIDE_LEFT = 0,
@@ -78,17 +81,7 @@ export class Camera {
     }
 
     _calculateFade(distance) {
-        if (distance > CLOSE_LIGHT_DISTANCE) {
-            let fade = (distance - CLOSE_LIGHT_DISTANCE) * 100 / FAR_LIGHT_DISTANCE;
-            if (fade > 100) {
-                return 100;
-            }
-            fade = Math.floor(100 * Math.sin(fade * Math.PI / 200));
-            return fade;
-        }
-        else {
-            return 0;
-        }
+        return distance <= CLOSE_LIGHT_DISTANCE ? 0 : distance >= FAR_PLUS_CLOSE_LIGHT_DISTANCE ? 1 : Math.sin((distance - CLOSE_LIGHT_DISTANCE) * FADE_MULTIPLIER);
     }
 
     drawSceneToScreen(scene, screen) {
@@ -99,17 +92,9 @@ export class Camera {
             ray = this._getRay(scene, cameraPointPos, i);
             if (ray.surface != undefined) {
                 if (ray.surfaceHeight < resolution.y) {
-                    //this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, i);
                     this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY, i);
                 }
                 fade = this._calculateFade(ray.distanceToSurface);
-                // fade = 0;
-                // if (ray.distanceToSurface > CLOSE_LIGHT_DISTANCE) {
-                //     fade = (ray.distanceToSurface - CLOSE_LIGHT_DISTANCE) * 100 / FAR_LIGHT_DISTANCE;
-                //     if (fade > 100) {
-                //         fade = 100;
-                //     }
-                // }
                 screen.drawLineFromTextureInPosition(ray.surface, ray.surfaceHeight, ray.positionOnSurface, i, fade);
             }
         }
@@ -122,10 +107,6 @@ export class Camera {
     _prelimCalcSurfaceHeight_Pt2 = undefined;
     _prelimCalcControlSizeX = undefined;
     _prelimCalcControlSizeY = undefined;
-    // // _prelimCalcControlHypotenuse = undefined;
-    // _prelimCalcFloorXinc = undefined;
-    // _prelimCalcFloorYinc = undefined;
-    // _prelimCalcFloorDistance = undefined;
     _floorAndCeilingDstInc = 0;
 
     _preliminaryCalculations() {
@@ -144,10 +125,9 @@ export class Camera {
         }
         this._prelimCalcSurfaceHeight_Pt1 = (WALL_SIZE * this._height * resolution.x) / this._width;
         this._prelimCalcSurfaceHeight_Pt2 = this._height / this._fov;
-        // control sizes and floor
+        // control sizes
         this._prelimCalcControlSizeX = new Array(resolution.x);
         this._prelimCalcControlSizeY = new Array(resolution.x);
-        // this._prelimCalcControlHypotenuse = new Array(resolution.x);
         this._prelimCalcFloorXinc = new Array(resolution.x);
         this._prelimCalcFloorYinc = new Array(resolution.x);
         this._prelimCalcFloorDistance = new Array(resolution.x);
@@ -155,7 +135,6 @@ export class Camera {
         for (let j = 0; j < resolution.x; j++) {
             this._prelimCalcControlSizeX[j] = new Array(360);
             this._prelimCalcControlSizeY[j] = new Array(360);
-            // this._prelimCalcControlHypotenuse[j] = new Array(360);
             this._prelimCalcFloorXinc[j] = new Array(360);
             this._prelimCalcFloorYinc[j] = new Array(360);
             this._prelimCalcFloorDistance[j] = new Array(360);
@@ -165,17 +144,6 @@ export class Camera {
                 let tempSourcePositionY = Math.sin(radians) * this._fov;
                 this._prelimCalcControlSizeX[j][i] = this._preliminaryCalculatedXinc[j][i] - tempSourcePositionX;
                 this._prelimCalcControlSizeY[j][i] = this._preliminaryCalculatedYinc[j][i] - tempSourcePositionY;
-                // // this._prelimCalcControlHypotenuse[j][i] = Math.sqrt(Math.pow(this._prelimCalcControlSizeX[j][i], 2) + Math.pow(this._prelimCalcControlSizeY[j][i], 2));
-                // let controlHypotenuse = Math.sqrt(Math.pow(this._prelimCalcControlSizeX[j][i], 2) + Math.pow(this._prelimCalcControlSizeY[j][i], 2));
-                // this._prelimCalcFloorXinc[j][i] = new Array(halfResolutionY + 1);
-                // this._prelimCalcFloorYinc[j][i] = new Array(halfResolutionY + 1);
-                // this._prelimCalcFloorDistance[j][i] = new Array(halfResolutionY + 1);
-                // for (let k = 0; k <= halfResolutionY; k++) {
-                //     let mult = HALF_WALL_SIZE / ((halfResolutionY + 1 - k) * this._multiplierToRealSize);
-                //     this._prelimCalcFloorXinc[j][i][k] = this._prelimCalcControlSizeX[j][i] * mult;
-                //     this._prelimCalcFloorYinc[j][i][k] = this._prelimCalcControlSizeY[j][i] * mult;
-                //     this._prelimCalcFloorDistance[j][i][k] = controlHypotenuse * mult;
-                // }
             }
         }
         this._floorAndCeilingDstInc = this._floorAndCeilingData.width * 4;
@@ -351,59 +319,19 @@ export class Camera {
         return scene.isWall(x, y);
     }
 
-    // _drawFloorAndCeilingLine(scene, hPixels, /*controlSizeX, controlSizeY,*/ rayIndex) {
-    //     let halfHPixels = hPixels >>> 1;
-    //     let height = (resolution.y >>> 1) - halfHPixels + 1;
-    //     let ceiling, floor, textureX, textureY;
-    //     let floorTop = resolution.y - height;
-    //     --height;
-    //     for (let i = height; i >= 0; i--) {
-    //         let x = this._raySourcePosition.x + this._prelimCalcFloorXinc[rayIndex][this._angle][i];
-    //         let y = this._raySourcePosition.y + this._prelimCalcFloorYinc[rayIndex][this._angle][i];
-    //         // let tileX = Math.floor(x / WALL_SIZE);
-    //         // let tileY = Math.floor(y / WALL_SIZE);
-    //         // let surfaceX = x % WALL_SIZE;
-    //         // let surfaceY = y % WALL_SIZE;
-    //         let tileX = x >>> 8;
-    //         let tileY = y >>> 8;
-    //         let surfaceX = x & 255;
-    //         let surfaceY = y & 255;
-    //         [ceiling, floor] = scene.getFloorAndCeiling(tileX, tileY);
-    //         let fade = this._calculateFade(this._prelimCalcFloorDistance[rayIndex][this._angle][i]); // temp
-    //         if (ceiling != undefined) {
-    //             textureX = Math.floor((surfaceX * ceiling.width) / WALL_SIZE);
-    //             textureY = Math.floor((surfaceY * ceiling.height) / WALL_SIZE);
-    //             copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, rayIndex, i, fade); // fade id temp
-    //         }
-    //         if (floor != undefined) {
-    //             textureX = Math.floor((surfaceX * floor.width) / WALL_SIZE);
-    //             textureY = Math.floor((surfaceY * floor.height) / WALL_SIZE);
-    //             copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, rayIndex, floorTop + height - i, fade); // fade is temp
-    //         }
-    //     }
-    // }
-
     _drawFloorAndCeilingLine(scene, hPixels, controlSizeX, controlSizeY, linePos) {
         let controlHypotenuse = Math.sqrt((controlSizeX * controlSizeX) + (controlSizeY * controlSizeY));
         let halfHPixels = Math.floor(hPixels / 2);
         let height = (resolution.y >>> 1) - halfHPixels + 1;
         let ceiling, floor, textureX, textureY;
         let floorTop = resolution.y - height;
-        // for (let i = height - 1, j = 0; i >= 0; i-- , j++) {
-        // let h = (halfHPixels + j) * this._multiplierToRealSize;
         height--;
         let dstPosX = linePos << 2;
         let dstPosWidth = this._floorAndCeilingData.width << 2;
-        let dstPosFloorR = dstPosX + (floorTop * dstPosWidth);
-        let dstPosFloorG = dstPosFloorR + 1;
-        let dstPosFloorB = dstPosFloorR + 2;
-        let dstPosCeilingR = dstPosX + (height * dstPosWidth);
-        let dstPosCeilingG = dstPosCeilingR + 1;
-        let dstPosCeilingB = dstPosCeilingR + 2;
-        // let dstPos = (linePos << 2) + ((floorTop * this._floorAndCeilingData.width) << 2);
+        let dstPosFloor = dstPosX + (floorTop * dstPosWidth);
+        let dstPosCeiling = dstPosX + (height * dstPosWidth);
         let h = halfHPixels * this._multiplierToRealSize;
         let srcPos;
-        // for (let i = height - 1, j = 0; i >= 0; i-- , j++) {
         for (let i = 0; i <= height; i++) {
             let multiplierXY = HALF_WALL_SIZE / h;
             let x = this._raySourcePosition.x + (controlSizeX * multiplierXY);
@@ -414,59 +342,43 @@ export class Camera {
             let surfaceY = y % WALL_SIZE;
             [ceiling, floor] = scene.getFloorAndCeiling(tileX, tileY);
             let floorHypotenuse = multiplierXY * controlHypotenuse;
-            let fade = this._calculateFade(floorHypotenuse) / 100; // temp
+            let fade = this._calculateFade(floorHypotenuse);
             let antifade = 1 - fade;
             let fadeR = 12 * fade;
             let fadeG = 0 * fade;
             let fadeB = 2 * fade;
             let r, g, b;
             if (ceiling != undefined) {
-                // textureX = Math.floor((surfaceX * ceiling.width) / WALL_SIZE);
-                // textureY = Math.floor((surfaceY * ceiling.height) / WALL_SIZE);
                 textureX = Math.floor(surfaceX * ceiling.sizeMultiplierX);
                 textureY = Math.floor(surfaceY * ceiling.sizeMultiplierY);
-                // copyPixel(ceiling.imageData, textureX, textureY, this._floorAndCeilingData, linePos, i, fade); // fade id temp
                 srcPos = (textureX << 2) + ((textureY * ceiling.imageData.width) << 2);
-                // this._floorAndCeilingData.data[dstPosCeiling] = (ceiling.imageData.data[srcPos] * antifade) + fadeR;
-                // this._floorAndCeilingData.data[dstPosCeiling + 1] = (ceiling.imageData.data[srcPos + 1] * antifade) + fadeG;
-                // this._floorAndCeilingData.data[dstPosCeiling + 2] = (ceiling.imageData.data[srcPos + 2] * antifade) + fadeB;
                 r = ceiling.imageData.data[srcPos];
                 g = ceiling.imageData.data[srcPos + 1];
                 b = ceiling.imageData.data[srcPos + 2];
                 r *= antifade;
                 g *= antifade;
                 b *= antifade;
-                this._floorAndCeilingData.data[dstPosCeilingR] = r + fadeR;
-                this._floorAndCeilingData.data[dstPosCeilingG] = g + fadeG;
-                this._floorAndCeilingData.data[dstPosCeilingB] = b + fadeB;
+                this._floorAndCeilingData.data[dstPosCeiling] = r + fadeR;
+                this._floorAndCeilingData.data[dstPosCeiling + 1] = g + fadeG;
+                this._floorAndCeilingData.data[dstPosCeiling + 2] = b + fadeB;
             }
             if (floor != undefined) {
-                // textureX = Math.floor((surfaceX * floor.width) / WALL_SIZE);
-                // textureY = Math.floor((surfaceY * floor.height) / WALL_SIZE);
                 textureX = Math.floor(surfaceX * floor.sizeMultiplierX);
                 textureY = Math.floor(surfaceY * floor.sizeMultiplierY);
-                // copyPixel(floor.imageData, textureX, textureY, this._floorAndCeilingData, linePos, floorTop + j, fade); // fade is temp
                 srcPos = (textureX << 2) + ((textureY * floor.imageData.width) << 2);
-                // this._floorAndCeilingData.data[dstPosFloor] = (floor.imageData.data[srcPos] * antifade) + fadeR;
-                // this._floorAndCeilingData.data[dstPosFloor + 1] = (floor.imageData.data[srcPos + 1] * antifade) + fadeG;
-                // this._floorAndCeilingData.data[dstPosFloor + 2] = (floor.imageData.data[srcPos + 2] * antifade) + fadeB;
                 r = floor.imageData.data[srcPos];
                 g = floor.imageData.data[srcPos + 1];
                 b = floor.imageData.data[srcPos + 2];
                 r *= antifade;
                 g *= antifade;
                 b *= antifade;
-                this._floorAndCeilingData.data[dstPosFloorR] = r + fadeR;
-                this._floorAndCeilingData.data[dstPosFloorG] = g + fadeG;
-                this._floorAndCeilingData.data[dstPosFloorB] = b + fadeB;
+                this._floorAndCeilingData.data[dstPosFloor] = r + fadeR;
+                this._floorAndCeilingData.data[dstPosFloor + 1] = g + fadeG;
+                this._floorAndCeilingData.data[dstPosFloor + 2] = b + fadeB;
             }
             h += this._multiplierToRealSize;
-            dstPosFloorR += this._floorAndCeilingDstInc;
-            dstPosFloorG = dstPosFloorR + 1;
-            dstPosFloorB = dstPosFloorR + 2;
-            dstPosCeilingR -= this._floorAndCeilingDstInc;
-            dstPosCeilingG = dstPosCeilingR + 1;
-            dstPosCeilingB = dstPosCeilingR + 2;
+            dstPosFloor += this._floorAndCeilingDstInc;
+            dstPosCeiling -= this._floorAndCeilingDstInc;
         }
     }
 

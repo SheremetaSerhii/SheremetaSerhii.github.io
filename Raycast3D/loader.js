@@ -184,12 +184,12 @@ export class Loader {
     _startGameLoopFunction = undefined;
     _endGameLoopFunction = undefined;
 
-    loadGame(startLevelN, playerSpeed, playerSize, startGameLoopFunction, endGameLoopFunction) {
+    loadGame(startLevelN, playerSpeed, playerTurnSpeed, playerSize, startGameLoopFunction, endGameLoopFunction) {
         this._startGameLoopFunction = startGameLoopFunction;
         this._endGameLoopFunction = endGameLoopFunction;
         this._textures = new Textures();
         this._map = new Map();
-        this._player = new Player(0, 0, 0, playerSpeed, playerSize, this._map);
+        this._player = new Player(0, 0, 0, playerSpeed, playerTurnSpeed, playerSize, this._map);
         this._textures.setCallback(() => { this.loadLevel(startLevelN); this._startGameLoopFunction(); });
         this._textures.loadTextures();
         // this.loadLevel(startLevelN);

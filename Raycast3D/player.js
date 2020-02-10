@@ -11,8 +11,8 @@ export class Player {
     _input = undefined;
     _camera = undefined;
 
-    constructor(x, y, angle, moveSpeed, bodySize, environment) {
-        this._body = new CreatureBody(x, y, angle, moveSpeed, bodySize, environment);
+    constructor(x, y, angle, moveSpeed, TurnSpeed, bodySize, environment) {
+        this._body = new CreatureBody(x, y, angle, moveSpeed, TurnSpeed, bodySize, environment);
         this._input = new Input(50);
         this._camera = new Camera(x, y, angle);
     }

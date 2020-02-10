@@ -28,18 +28,27 @@ class GameLoop {
 let gameScreen = new Screen(document.getElementById("mainCanvas"));
 let gameTextures, gameMap, player;
 
+const FRAMESKIP = 1;
+let frameskipCounter = 0;
+
 function updateGame() {
     player.movement();
-    // gameScreen.fillBlack();
-    player.getCamera().drawSceneToScreen(gameMap, gameScreen);
-    gameScreen.drawScreen();
+    if (frameskipCounter == 0) {
+        player.getCamera().drawSceneToScreen(gameMap, gameScreen);
+        gameScreen.drawScreen();  
+    }
+    frameskipCounter++;
+    if (frameskipCounter > FRAMESKIP) {
+        frameskipCounter = 0;
+    }
     requestAnimationFrame(updateGame);
 }
 
 const
-    PLAYER_SPEED = 2.5 * (WALL_SIZE >>> 5),//1.5,
+    PLAYER_SPEED = 2.5 * (WALL_SIZE >>> 5),
+    PLAYER_TURN_SPEED = 2,
     PLAYER_SIZE = 16 * (WALL_SIZE >>> 5),
     START_LEVEL = 0;
 let gameLoop = new GameLoop(updateGame);
 let gameLoader = new Loader();
-[gameTextures, gameMap, player] = gameLoader.loadGame(START_LEVEL, PLAYER_SPEED, PLAYER_SIZE, gameLoop.startGameLoop.bind(gameLoop), gameLoop.endGameLoop.bind(gameLoop));
+[gameTextures, gameMap, player] = gameLoader.loadGame(START_LEVEL, PLAYER_SPEED, PLAYER_TURN_SPEED, PLAYER_SIZE, gameLoop.startGameLoop.bind(gameLoop), gameLoop.endGameLoop.bind(gameLoop));

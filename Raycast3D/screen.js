@@ -13,34 +13,6 @@ export function disableImageSmoothing(ctx) {
     ctx.imageSmoothingEnabled = false;
 }
 
-export function copyPixel(src, srcX, srcY, dst, dstX, dstY, fade) {
-    let srcPos = ((srcY * src.width) << 2) + (srcX << 2);
-    let dstPos = ((dstY * dst.width) << 2) + (dstX << 2);
-    // dst.data[dstPos] = src.data[srcPos];         // Red
-    // dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
-    // dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
-    // // dst.data[dstPos + 3] = src.data[srcPos + 3]; // alpha
-    // if (fade == 0) {
-    //     dst.data[dstPos] = src.data[srcPos];         // Red
-    //     dst.data[dstPos + 1] = src.data[srcPos + 1]; // green
-    //     dst.data[dstPos + 2] = src.data[srcPos + 2]; // blue
-    // }
-    // else {
-        // if (fade == 1) {
-        //     dst.data[dstPos] = 12;
-        //     dst.data[dstPos + 1] = 0;
-        //     dst.data[dstPos + 2] = 2;
-        // }
-        // else {
-            // let antifade = 100 - fade;
-            let antifade = 1 - fade;
-            dst.data[dstPos] = ((src.data[srcPos] * antifade) + (12 * fade)) /*/ 100*/;         // Red
-            dst.data[dstPos + 1] = src.data[srcPos + 1] * antifade /*/ 100*/; // green
-            dst.data[dstPos + 2] = ((src.data[srcPos + 2] * antifade) + (2 * fade)) /*/ 100*/;
-        // }
-    // }
-}
-
 export class Screen {
 
     _surface = undefined;
@@ -52,10 +24,6 @@ export class Screen {
     _resolution = undefined;
 
     constructor(canvasObj) {
-
-        // context.webkitImageSmoothingEnabled = false;
-        // context.mozImageSmoothingEnabled = false;
-        // context.imageSmoothingEnabled = false;
         if (canvasObj.getContext) {
             this._surface = canvasObj;
             this._surfaceContext = canvasObj.getContext("2d", { alpha: false });
@@ -121,33 +89,13 @@ export class Screen {
     drawLineFromTextureInPosition(texture, lineLength, srcPos, dstPos, fade) {
         let roundedLineLen = Math.floor(lineLength);
         let topOffset = Math.floor((this._resolution.y - roundedLineLen) / 2);
-        if (fade < 100) {
+        if (fade < 1) {
             this._bufferContext.drawImage(texture, srcPos, 0, 1, texture.height, dstPos, topOffset, 1, roundedLineLen);
-            // this._bufferContext.fillStyle = "rgb(255,255,255)";
-            // this._bufferContext.fillRect(dstPos, topOffset, 1, roundedLineLen);
         }
-        if (fade > 0) {
-            if (fade > 100) {
-                fade = 100;
-            }
-            //this._bufferContext.fillStyle = "rgb(10,0,10)";
-            this._bufferContext.fillStyle = "rgb(12,0,2)";
-            this._bufferContext.globalAlpha = fade / 100; //Math.floor(fade / 5) / 20;
-            this._bufferContext.fillRect(dstPos, topOffset, 1, roundedLineLen);
-            this._bufferContext.globalAlpha = 1;
-        }
-    }
-
-    // drawCeilingAndFloorLineInPosition(lineTexture, lineLength, dstPos) {
-    //     let floorTopOffset = this._resolution.y - lineLength;
-    //     this._bufferContext.drawImage(lineTexture, 0, 0, 1, lineLength, dstPos, 0, 1, lineLength); //ceiling
-    //     this._bufferContext.drawImage(lineTexture, 1, 0, 1, lineLength, dstPos, floorTopOffset, 1, lineLength); //floor
-    //     //must add some fade later
-    // }
-
-    drawCeilingAndFloorLineInPosition(lineTexture, dstPos) {
-        this._bufferContext.putImageData(lineTexture, dstPos, 0);
-        //must add some fade later
+        this._bufferContext.fillStyle = "rgb(12,0,2)";
+        this._bufferContext.globalAlpha = fade;
+        this._bufferContext.fillRect(dstPos, topOffset, 1, roundedLineLen);
+        this._bufferContext.globalAlpha = 1;
     }
 
 }

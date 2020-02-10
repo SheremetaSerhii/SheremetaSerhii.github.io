@@ -8,8 +8,8 @@ export class CreatureBody extends MovableElement {
     _environment = undefined;
     _bodyRadius = 0;
 
-    constructor(x, y, angle, moveSpeed, bodySize, environment) {
-        super(x, y, angle, moveSpeed);
+    constructor(x, y, angle, moveSpeed, TurnSpeed, bodySize, environment) {
+        super(x, y, angle, moveSpeed, TurnSpeed);
         this.setBodySize(bodySize);
         this.setEnvironment(environment);
     }
