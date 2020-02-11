@@ -10,12 +10,12 @@ import { disableImageSmoothing } from "./screen.js";
 const HALF_WALL_SIZE = Math.floor(WALL_SIZE / 2);
 
 const
-    CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
-    FAR_LIGHT_DISTANCE = WALL_SIZE * 8,
-    FAR_PLUS_CLOSE_LIGHT_DISTANCE = CLOSE_LIGHT_DISTANCE + FAR_LIGHT_DISTANCE,
+    // CLOSE_LIGHT_DISTANCE = WALL_SIZE * 1,
+    // FAR_LIGHT_DISTANCE = WALL_SIZE * 8,
+    // FAR_PLUS_CLOSE_LIGHT_DISTANCE = CLOSE_LIGHT_DISTANCE + FAR_LIGHT_DISTANCE,
+    // FADE_MULTIPLIER = HALF_PI / FAR_LIGHT_DISTANCE,
     DIRECTION_X = 0,
-    DIRECTION_Y = 1,
-    FADE_MULTIPLIER = HALF_PI / FAR_LIGHT_DISTANCE;
+    DIRECTION_Y = 1;
 
 const
     SIDE_LEFT = 0,
@@ -80,11 +80,16 @@ export class Camera {
         this._raySourcePosition.y = this._y + Math.sin(radians) * this._fov;
     }
 
+    _curFade = undefined;
+
     _calculateFade(distance) {
-        return distance <= CLOSE_LIGHT_DISTANCE ? 0 : distance >= FAR_PLUS_CLOSE_LIGHT_DISTANCE ? 1 : Math.sin((distance - CLOSE_LIGHT_DISTANCE) * FADE_MULTIPLIER);
+        // return distance <= CLOSE_LIGHT_DISTANCE ? 0 : distance >= FAR_PLUS_CLOSE_LIGHT_DISTANCE ? 1 : Math.sin((distance - CLOSE_LIGHT_DISTANCE) * FADE_MULTIPLIER);
+        return distance <= this._curFade.dist.close ? 0 : distance >= this._curFade.dist.total ? 1 : Math.sin((distance - this._curFade.dist.close) * this._curFade.dist.multiplier);
     }
 
     drawSceneToScreen(scene, screen) {
+        let defaultFadeData = scene.getFadeData();
+        this._curFade = defaultFadeData;
         screen.clearBuffer();
         let ray, fade, cameraPointPos;
         for (let i = 0; i < resolution.x; i++) {
@@ -95,7 +100,7 @@ export class Camera {
                     this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY, i);
                 }
                 fade = this._calculateFade(ray.distanceToSurface);
-                screen.drawLineFromTextureInPosition(ray.surface, ray.surfaceHeight, ray.positionOnSurface, i, fade);
+                screen.drawLineFromTextureInPosition(ray.surface, ray.surfaceHeight, ray.positionOnSurface, i, fade, this._curFade.color.str);
             }
         }
         screen.drawToBackgroundBuffer(this._floorAndCeilingData);
@@ -344,9 +349,9 @@ export class Camera {
             let floorHypotenuse = multiplierXY * controlHypotenuse;
             let fade = this._calculateFade(floorHypotenuse);
             let antifade = 1 - fade;
-            let fadeR = 12 * fade;
-            let fadeG = 0 * fade;
-            let fadeB = 2 * fade;
+            let fadeR = this._curFade.color.r * fade;
+            let fadeG = this._curFade.color.g * fade;
+            let fadeB = this._curFade.color.b * fade;
             let r, g, b;
             if (ceiling != undefined) {
                 textureX = Math.floor(surfaceX * ceiling.sizeMultiplierX);

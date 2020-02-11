@@ -5,6 +5,7 @@ import { LOOK_ } from "./data.js";
 import { LEVEL_DATA } from "./data.js";
 import { MAP_INDEX_ } from "./data.js";
 import { IMG_ } from "./data.js";
+import { HALF_PI } from "./data.js";
 import { Player } from "./player.js";
 
 export class Map {
@@ -12,6 +13,10 @@ export class Map {
     _data = {
         textureData: undefined,
         mapData: {
+            fade: {
+                color: { r: 0, g: 0, b: 0, str: "rgb(0,0,0)" },
+                dist: { close: 0, far: 1, total: 1, multiplier: 1 }
+            },
             firstWall: 1,
             lastWall: 1,
             sizeX: 0,
@@ -23,6 +28,14 @@ export class Map {
     }
 
     loadLevel(levelN, textures, player) {
+        this._data.mapData.fade.color.r = LEVEL_DATA[levelN].fadeColor[0];
+        this._data.mapData.fade.color.g = LEVEL_DATA[levelN].fadeColor[1];
+        this._data.mapData.fade.color.b = LEVEL_DATA[levelN].fadeColor[2];
+        this._data.mapData.fade.color.str = "rgb(" + LEVEL_DATA[levelN].fadeColor.join(",") + ")";
+        this._data.mapData.fade.dist.close = WALL_SIZE * LEVEL_DATA[levelN].fadeDistance[0];
+        this._data.mapData.fade.dist.far = WALL_SIZE * LEVEL_DATA[levelN].fadeDistance[1];
+        this._data.mapData.fade.dist.total = this._data.mapData.fade.dist.close + this._data.mapData.fade.dist.far;
+        this._data.mapData.fade.dist.multiplier = HALF_PI / this._data.mapData.fade.dist.far;
         let camPosInc = Math.floor(WALL_SIZE / 2);
         this._data.mapData.sizeX = LEVEL_DATA[levelN].sizeX;
         this._data.mapData.sizeY = LEVEL_DATA[levelN].sizeY;
@@ -73,6 +86,10 @@ export class Map {
                 this._data.mapData.ceilingMap[x][y] = Math.floor(Math.random() * 4) + 4;
             }
         }
+    }
+
+    getFadeData() {
+        return this._data.mapData.fade;
     }
 
     getMapData() {

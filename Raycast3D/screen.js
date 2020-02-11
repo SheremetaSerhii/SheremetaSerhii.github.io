@@ -86,14 +86,14 @@ export class Screen {
         this._bufferContext.restore();
     }
 
-    drawLineFromTextureInPosition(texture, lineLength, srcPos, dstPos, fade) {
+    drawLineFromTextureInPosition(texture, lineLength, srcPos, dstPos, fadeValue, fadeColor) {
         let roundedLineLen = Math.floor(lineLength);
         let topOffset = Math.floor((this._resolution.y - roundedLineLen) / 2);
-        if (fade < 1) {
+        if (fadeValue < 1) {
             this._bufferContext.drawImage(texture, srcPos, 0, 1, texture.height, dstPos, topOffset, 1, roundedLineLen);
         }
-        this._bufferContext.fillStyle = "rgb(12,0,2)";
-        this._bufferContext.globalAlpha = fade;
+        this._bufferContext.fillStyle = fadeColor;
+        this._bufferContext.globalAlpha = fadeValue;
         this._bufferContext.fillRect(dstPos, topOffset, 1, roundedLineLen);
         this._bufferContext.globalAlpha = 1;
     }

@@ -52,6 +52,10 @@ export const IMG_ = {
 export const LEVEL_DATA = [
     // LEVEL 0
     {
+        fadeColor: [12, 0, 2],
+        fadeDistance: [1, 8],
+        // fadeColor: [128, 135, 128],
+        // fadeDistance: [1, 4],
         startLook: LOOK_.UP,
         sizeX: 32,
         sizeY: 32,
