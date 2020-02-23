@@ -47,7 +47,11 @@ export const IMG_ = {
     TEX06: { I: 6, NAME: "res/ceiling03.png" },
     TEX07: { I: 7, NAME: "res/floor02.png" },
     TEX08: { I: 8, NAME: "res/ceiling01.png" }
-}
+};
+
+export const MAP_NAMES = [
+    "map00"
+];
 
 export const LEVEL_DATA = [
     // LEVEL 0
@@ -60,7 +64,27 @@ export const LEVEL_DATA = [
         sizeX: 32,
         sizeY: 32,
         walls: [IMG_.TEX01.I, IMG_.TEX02.I, IMG_.TEX03.I, IMG_.TEX04.I, IMG_.TEX05.I, IMG_.TEX06.I, IMG_.TEX07.I, IMG_.TEX08.I], // TEX05 - TEX08 is temporary yet
-        map: [
+        wall: [
+            { i: IMG_.TEX01.I, r: 255, g: 200, b: 0 },
+            { i: IMG_.TEX02.I, r: 255, g: 100, b: 0 },
+            { i: IMG_.TEX03.I, r: 100, g: 100, b: 255 },
+            { i: IMG_.TEX04.I, r: 220, g: 200, b: 160 },
+            { i: IMG_.TEX05.I, r: 120, g: 0, b: 120 }
+        ],
+        floor: [
+            { i: IMG_.TEX05.I, r: 120, g: 0, b: 120 },
+            { i: IMG_.TEX06.I, r: 255, g: 230, b: 120 },
+            { i: IMG_.TEX07.I, r: 140, g: 140, b: 140 },
+            { i: IMG_.TEX08.I, r: 255, g: 200, b: 160 }
+        ],
+        ceiling: [
+            { i: IMG_.TEX05.I, r: 120, g: 0, b: 120 },
+            { i: IMG_.TEX06.I, r: 255, g: 230, b: 120 },
+            { i: IMG_.TEX07.I, r: 140, g: 140, b: 140 },
+            { i: IMG_.TEX08.I, r: 255, g: 200, b: 160 }
+        ],
+        startPlace: { r: 255, g: 0, b: 255 },
+        /*map: [
             //0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
             [__, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, __, W2, W2, W2, W2, W2, W2, W2, W2, W4, W4, W4, W4, W4, W4, W4, W4], // 0
             [__, W2, __, __, __, __, __, __, __, __, __, __, __, __, W2, __, W2, __, __, __, __, __, __, W2, W4, __, __, __, __, __, __, W4], // 1
@@ -94,6 +118,6 @@ export const LEVEL_DATA = [
             [W1, __, SS, __, W1, W5, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, __, W4], // 29
             [W1, __, __, __, W1, W5, W5, W5, W5, W5, W5, W5, W5, W2, __, __, __, __, __, __, __, __, __, __, __, __, W2, W4, __, __, __, W4], // 30
             [W1, W1, W1, W1, W1, __, __, __, __, __, __, __, __, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W4, W4, W4, W4, W4]  // 31
-        ]
+        ]*/
     }
 ];

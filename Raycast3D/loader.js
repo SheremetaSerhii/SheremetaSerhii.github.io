@@ -7,6 +7,7 @@ import { MAP_INDEX_ } from "./data.js";
 import { IMG_ } from "./data.js";
 import { HALF_PI } from "./data.js";
 import { Player } from "./player.js";
+import { MAP_NAMES } from "./data.js";
 
 export class Map {
 
@@ -27,24 +28,39 @@ export class Map {
         }
     }
 
+    _mapBitmaps = undefined;
+    _levelData = undefined;
+    // _mapTextureData = undefined;
+
+    setLevelData(levelData) {
+        this._levelData = levelData;
+    }
+
+    setMapBitmaps(mapBitmaps) {
+        this._mapBitmaps = mapBitmaps;
+    }
+
     loadLevel(levelN, textures, player) {
-        this._data.mapData.fade.color.r = LEVEL_DATA[levelN].fadeColor[0];
-        this._data.mapData.fade.color.g = LEVEL_DATA[levelN].fadeColor[1];
-        this._data.mapData.fade.color.b = LEVEL_DATA[levelN].fadeColor[2];
-        this._data.mapData.fade.color.str = "rgb(" + LEVEL_DATA[levelN].fadeColor.join(",") + ")";
-        this._data.mapData.fade.dist.close = WALL_SIZE * LEVEL_DATA[levelN].fadeDistance[0];
-        this._data.mapData.fade.dist.far = WALL_SIZE * LEVEL_DATA[levelN].fadeDistance[1];
+        // let mapTextureData = this._mapBitmaps[levelN].imageData.data;
+        this._data.mapData.fade.color.r = this._levelData[levelN].fadeColor[0];
+        this._data.mapData.fade.color.g = this._levelData[levelN].fadeColor[1];
+        this._data.mapData.fade.color.b = this._levelData[levelN].fadeColor[2];
+        this._data.mapData.fade.color.str = "rgb(" + this._levelData[levelN].fadeColor.join(",") + ")";
+        this._data.mapData.fade.dist.close = WALL_SIZE * this._levelData[levelN].fadeDistance[0];
+        this._data.mapData.fade.dist.far = WALL_SIZE * this._levelData[levelN].fadeDistance[1];
         this._data.mapData.fade.dist.total = this._data.mapData.fade.dist.close + this._data.mapData.fade.dist.far;
         this._data.mapData.fade.dist.multiplier = HALF_PI / this._data.mapData.fade.dist.far;
         let camPosInc = Math.floor(WALL_SIZE / 2);
-        this._data.mapData.sizeX = LEVEL_DATA[levelN].sizeX;
-        this._data.mapData.sizeY = LEVEL_DATA[levelN].sizeY;
+        this._data.mapData.sizeX = this._levelData[levelN].sizeX;
+        this._data.mapData.sizeY = this._levelData[levelN].sizeY;
         this._data.mapData.firstWall = 1;
-        this._data.mapData.lastWall = LEVEL_DATA[levelN].walls.length;
-        this._data.mapData.map = LEVEL_DATA[levelN].map;
+        this._data.mapData.lastWall = this._levelData[levelN].walls.length;
+        // this._data.mapData.map = this._levelData[levelN].map;
+        [this._data.mapData.map, this._data.mapData.floorMap, this._data.mapData.ceilingMap] =
+            this._makeMapFromImageData(this._mapBitmaps[levelN].imageData.data, this._levelData[levelN], this._mapBitmaps[levelN].imageData.width);
         let playerPosX = (Math.floor(this._data.mapData.sizeX / 2) * WALL_SIZE) + camPosInc;
         let playerPosY = (Math.floor(this._data.mapData.sizeY / 2) * WALL_SIZE) + camPosInc;
-        let startPosEarned = false;
+        /*let startPosEarned = false;
         for (let y = 0; y < this._data.mapData.sizeY; y++) {
             for (let x = 0; x < this._data.mapData.sizeX; x++) {
                 if (this._data.mapData.map[y][x] == MAP_INDEX_.START_PLACE) {
@@ -57,9 +73,9 @@ export class Map {
             if (startPosEarned) {
                 break;
             }
-        }
+        }*/
         let playerAngle = 0;
-        switch (LEVEL_DATA[levelN].startLook) {
+        switch (this._levelData[levelN].startLook) {
             case LOOK_.LEFT:
                 playerAngle = 270;
                 break;
@@ -75,7 +91,7 @@ export class Map {
         }
         player.setPosition(playerPosX, playerPosY, playerAngle);
         this._data.textureData = this._getMapTexturesFromTexturesList(levelN, textures);
-        ////// temporary things ///////
+        /*///// temporary things ///////
         this._data.mapData.floorMap = new Array(this._data.mapData.sizeX);
         this._data.mapData.ceilingMap = new Array(this._data.mapData.sizeX);
         for (let x = 0; x < this._data.mapData.sizeX; x++) {
@@ -85,7 +101,48 @@ export class Map {
                 this._data.mapData.floorMap[x][y] = Math.floor(Math.random() * 4) + 4;
                 this._data.mapData.ceilingMap[x][y] = Math.floor(Math.random() * 4) + 4;
             }
+        }*/
+    }
+
+    _makeMapFromImageData(mapImageData, mapLevelData, imgSizeX) {
+        // up-left part of image data is walls, foes, doors, etc.
+        // up-right part of image is light map
+        // down-left part of image is floor
+        // down-right part of image is ceiling
+        let mapData = new Array(mapLevelData.sizeX),
+            floorData = new Array(mapLevelData.sizeX),
+            ceilingData = new Array(mapLevelData.sizeX);
+        for (let x = 0; x < mapLevelData.sizeX; x++) {
+            mapData[x] = new Array(mapLevelData.sizeY);
+            floorData[x] = new Array(mapLevelData.sizeY);
+            ceilingData[x] = new Array(mapLevelData.sizeY);
+            mapData[x].fill(0);
+            floorData[x].fill(0);
+            ceilingData[x].fill(0);
+            for (let y = 0; y < mapLevelData.sizeY; y++) {
+                let x1 = x * 4,
+                    y1 = y * imgSizeX * 4,
+                    x2 = (x + mapLevelData.sizeX) * 4,
+                    y2 = (y + mapLevelData.sizeY) * imgSizeX * 4;
+                let mapDataPos = x1 + y1,
+                    // lightDataPos = x2 + y1, // unused yet
+                    flDataPos = x1 + y2,
+                    ceDataPos = x2 + y2;
+                mapData[x][y] = this._getTileDataFromColor(mapImageData[mapDataPos], mapImageData[mapDataPos + 1], mapImageData[mapDataPos + 2], mapLevelData.wall);
+                floorData[x][y] = this._getTileDataFromColor(mapImageData[flDataPos], mapImageData[flDataPos + 1], mapImageData[flDataPos + 2], mapLevelData.floor);
+                ceilingData[x][y] = this._getTileDataFromColor(mapImageData[ceDataPos], mapImageData[ceDataPos + 1], mapImageData[ceDataPos + 2], mapLevelData.ceiling);
+            }
         }
+        return [mapData, floorData, ceilingData];
+    }
+
+    _getTileDataFromColor(r, g, b, dataArray) {
+        for (let i = 0; i < dataArray.length; i++) {
+            if (r == dataArray[i].r && g == dataArray[i].g && b == dataArray[i].b) {
+                return dataArray[i].i;
+            }
+        }
+        return 0;
     }
 
     getFadeData() {
@@ -101,12 +158,14 @@ export class Map {
     }
 
     getTile(x, y) {
-        return this._data.mapData.map[y][x];
+        // return this._data.mapData.map[y][x];
+        return this._data.mapData.map[x][y];
     }
 
     isWall(x, y) {
-        let tile = this.getTile(x, y);
-        return (tile >= this._data.mapData.firstWall && tile <= this._data.mapData.lastWall);
+        // let tile = this.getTile(x, y);
+        // return (tile >= this._data.mapData.firstWall && tile <= this._data.mapData.lastWall);
+        return this.getTile(x, y) != 0;
     }
 
     getSurface(x, y) {
@@ -116,16 +175,16 @@ export class Map {
     getFloorAndCeiling(x, y) {
         let floor, ceiling;
         if (x > 0 && y > 0 && x < this._data.mapData.sizeX && y < this._data.mapData.sizeY) {
-            ceiling = this._data.textureData[this._data.mapData.ceilingMap[x][y]];
-            floor = this._data.textureData[this._data.mapData.floorMap[x][y]];
+            ceiling = this._data.textureData[this._data.mapData.ceilingMap[x][y] - 1];
+            floor = this._data.textureData[this._data.mapData.floorMap[x][y] - 1];
         }
         return [ceiling, floor];
     }
 
     _getMapTexturesFromTexturesList(levelN, texturesList) {
         let mapTextures = [];
-        for (let i = 0; i < LEVEL_DATA[levelN].walls.length; i++) {
-            let textureN = LEVEL_DATA[levelN].walls[i];
+        for (let i = 0; i < this._levelData[levelN].walls.length; i++) {
+            let textureN = this._levelData[levelN].walls[i];
             mapTextures.push(texturesList[textureN]);
         }
         return mapTextures;
@@ -155,6 +214,19 @@ export class Textures {
         for (key in IMG_) {
             let currentImage = new Image();
             currentImage.src = IMG_[key].NAME;
+            currentImage.addEventListener("load", this._loadImageEvent.bind(this), false);
+            this._textures.push(currentImage);
+        }
+    }
+
+    loadTexturesFromList(list) {
+        this._textures = [];
+        this._texturesCounter = 0;
+        this._totalImagesQuantity = 0;
+        this._totalImagesQuantity = list.length;
+        for (let i = 0; i < list.length; i++) {
+            let currentImage = new Image();
+            currentImage.src = list[i];
             currentImage.addEventListener("load", this._loadImageEvent.bind(this), false);
             this._textures.push(currentImage);
         }
@@ -208,17 +280,33 @@ export class Loader {
     _player = undefined;
     _startGameLoopFunction = undefined;
     _endGameLoopFunction = undefined;
+    _mapBitmaps = undefined;
 
     loadGame(startLevelN, playerSpeed, playerTurnSpeed, playerSize, startGameLoopFunction, endGameLoopFunction) {
         this._startGameLoopFunction = startGameLoopFunction;
         this._endGameLoopFunction = endGameLoopFunction;
         this._textures = new Textures();
         this._map = new Map();
+        this._map.setLevelData(LEVEL_DATA);
         this._player = new Player(0, 0, 0, playerSpeed, playerTurnSpeed, playerSize, this._map);
-        this._textures.setCallback(() => { this.loadLevel(startLevelN); this._startGameLoopFunction(); });
-        this._textures.loadTextures();
+
+        let mapList = MAP_NAMES.map(mapName => "res/maps/" + mapName + "/map.png");
+        this._mapBitmaps = new Textures();
+        this._mapBitmaps.setCallback(() => { this._loadMapsAndTextures(startLevelN); });
+        this._mapBitmaps.loadTexturesFromList(mapList);
+        // this._loadTextures(startLevelN);
+
+        // this._textures.setCallback(() => { this.loadLevel(startLevelN); this._startGameLoopFunction(); });
+        // this._textures.loadTextures();
         // this.loadLevel(startLevelN);
         return [this._textures, this._map, this._player];
+    }
+
+    _loadMapsAndTextures(startLevelN) {
+        this._map.setMapBitmaps(this._mapBitmaps.getTexturesList());
+        this._textures.setCallback(() => { this.loadLevel(startLevelN); this._startGameLoopFunction(); });
+        this._textures.loadTextures();
+        this._mapBitmaps = undefined;
     }
 
     loadLevel(levelN) {
