@@ -9,19 +9,21 @@ export const MAP_INDEX_ = {
     ITEMS_BEGIN: 300
 }
 
-const
+export const LIGHTMAP_TILE_SIZE = 8;
+
+/*const
     __ = 0,
     W1 = 1, W2 = 2, W3 = 3, W4 = 4, W5 = 5, W6 = 6, W7 = 7, W8 = 8, W9 = 9, W0 = 10,
     WA = 11, WB = 12, WC = 13, WD = 14, WE = 15, WF = 16, WG = 17, WH = 18, WI = 19, WJ = 20,
     WK = 21, WL = 22, WM = 23, WN = 24, WO = 25, WP = 26, WQ = 27, WR = 28, WS = 29, WT = 30,
-    SS = MAP_INDEX_.START_PLACE;
+    SS = MAP_INDEX_.START_PLACE;*/
 
 export const RESOLUTION_ = {
     // X: 160, Y: 120
     // X: 240, Y: 180
-    X: 320, Y: 240
+    // X: 320, Y: 240
     // X: 480, Y: 360
-    // X: 640, Y: 480
+    X: 640, Y: 480
     // X: 800, Y: 600
     // X: 1120, Y: 840
     // X: 1280, Y: 960
@@ -53,13 +55,16 @@ export const MAP_NAMES = [
     "map00"
 ];
 
+export const START_PLACE = { r: 255, g: 0, b: 255 };
+
 export const LEVEL_DATA = [
     // LEVEL 0
     {
         fadeColor: [12, 0, 2],
-        fadeDistance: [1, 8],
+        // fadeDistance: [1, 8],
+        mapLightDistance: [0.5, 3],
         // fadeColor: [128, 135, 128],
-        // fadeDistance: [1, 4],
+        fadeDistance: [0.2, 2.5],
         startLook: LOOK_.UP,
         sizeX: 32,
         sizeY: 32,
@@ -82,8 +87,7 @@ export const LEVEL_DATA = [
             { i: IMG_.TEX06.I, r: 255, g: 230, b: 120 },
             { i: IMG_.TEX07.I, r: 140, g: 140, b: 140 },
             { i: IMG_.TEX08.I, r: 255, g: 200, b: 160 }
-        ],
-        startPlace: { r: 255, g: 0, b: 255 },
+        ]
         /*map: [
             //0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
             [__, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, W2, __, W2, W2, W2, W2, W2, W2, W2, W2, W4, W4, W4, W4, W4, W4, W4, W4], // 0

@@ -8,6 +8,87 @@ import { IMG_ } from "./data.js";
 import { HALF_PI } from "./data.js";
 import { Player } from "./player.js";
 import { MAP_NAMES } from "./data.js";
+import { LIGHTMAP_TILE_SIZE } from "./data.js";
+import { START_PLACE } from "./data.js";
+
+const LIGHT_MAP_SIZE_MOD = LIGHTMAP_TILE_SIZE / WALL_SIZE;
+
+export class LightMap {
+
+    _map = undefined;
+    _sizeX = 0;
+    _sizeY = 0;
+    _lightSources = [];
+    _closeLightDistance = 0;
+    _farLightDistance = 1;
+    _totalLightDistance = 1;
+
+    constructor(sizeX, sizeY, lightDistance) {
+        this._closeLightDistance = lightDistance[0] * LIGHTMAP_TILE_SIZE;
+        this._farLightDistance = lightDistance[1] * LIGHTMAP_TILE_SIZE;
+        this._totalLightDistance = this._closeLightDistance + this._farLightDistance;
+        this._sizeX = sizeX * LIGHTMAP_TILE_SIZE;
+        this._sizeY = sizeY * LIGHTMAP_TILE_SIZE;
+        this._map = new Array(this._sizeX);
+        for (let x = 0; x < this._sizeX; x++) {
+            this._map[x] = new Float64Array(this._sizeY);
+            this._map[x].fill(1);
+        }
+    }
+
+    addLightSource(x, y, d) {
+        let lsX = (x * LIGHTMAP_TILE_SIZE) + (LIGHTMAP_TILE_SIZE >>> 1) - 1,
+            lsY = (y * LIGHTMAP_TILE_SIZE) + (LIGHTMAP_TILE_SIZE >>> 1) - 1,
+            lsD = ((d * this._farLightDistance) / 200);
+        let lightSource = { x: lsX, y: lsY, distance: lsD };
+        this._lightSources.push(lightSource);
+    }
+
+    calculateLightmap() {
+        let i = 0;
+        while (i < this._lightSources.length) {
+            let fade;
+            let totalDistance = Math.ceil(this._lightSources[i].distance + this._closeLightDistance);
+            let top = this._lightSources[i].y - totalDistance,
+                bottom = this._lightSources[i].y + totalDistance,
+                left = this._lightSources[i].x - totalDistance,
+                right = this._lightSources[i].x + totalDistance,
+                srcX = this._lightSources[i].x + 0.5,
+                srcY = this._lightSources[i].y + 0.5;
+            top = top < 0 ? 0 : top;
+            bottom = bottom >= this._sizeY ? this._sizeY - 1 : bottom;
+            left = left < 0 ? 0 : left;
+            right = right >= this._sizeX ? this._sizeX - 1 : right;
+            for (let y = top; y <= bottom; y++) {
+                let h = srcY - y;
+                let sqrH = h * h;
+                for (let x = left; x <= right; x++) {
+                    let w = srcX - x;
+                    let distToSrc = Math.sqrt((w * w) + sqrH);
+                    if (distToSrc <= this._closeLightDistance) {
+                        fade = 0;
+                    }
+                    else {
+                        if (distToSrc >= totalDistance) {
+                            fade = 1;
+                        }
+                        else {
+                            fade = (distToSrc - this._closeLightDistance) / this._lightSources[i].distance;
+                        }
+                    }
+                    this._map[x][y] = Math.min(this._map[x][y], fade);
+                }
+            }
+            i++;
+        }
+        this._lightSources.length = 0;
+    }
+
+    getLightValue(x, y) {
+        return this._map[Math.floor(x * LIGHT_MAP_SIZE_MOD)][Math.floor(y * LIGHT_MAP_SIZE_MOD)];
+    }
+
+}
 
 export class Map {
 
@@ -24,7 +105,8 @@ export class Map {
             sizeY: 0,
             map: undefined,
             floorMap: undefined,
-            ceilingMap: undefined
+            ceilingMap: undefined,
+            lightMap: undefined
         }
     }
 
@@ -40,6 +122,28 @@ export class Map {
         this._mapBitmaps = mapBitmaps;
     }
 
+    _setPlayerPosition(player, x, y, mapLevelData) {
+        let playerAngle = 0;
+        switch (mapLevelData.startLook) {
+            case LOOK_.LEFT:
+                playerAngle = 270;
+                break;
+            case LOOK_.UP:
+                playerAngle = 0;
+                break;
+            case LOOK_.RIGHT:
+                playerAngle = 90;
+                break;
+            case LOOK_.DOWN:
+                playerAngle = 180;
+                break;
+        }
+        let camPosInc = Math.floor(WALL_SIZE / 2);
+        let playerPosX = (x * WALL_SIZE) + camPosInc;
+        let playerPosY = (y * WALL_SIZE) + camPosInc;
+        player.setPosition(playerPosX, playerPosY, playerAngle);
+    }
+
     loadLevel(levelN, textures, player) {
         // let mapTextureData = this._mapBitmaps[levelN].imageData.data;
         this._data.mapData.fade.color.r = this._levelData[levelN].fadeColor[0];
@@ -50,16 +154,16 @@ export class Map {
         this._data.mapData.fade.dist.far = WALL_SIZE * this._levelData[levelN].fadeDistance[1];
         this._data.mapData.fade.dist.total = this._data.mapData.fade.dist.close + this._data.mapData.fade.dist.far;
         this._data.mapData.fade.dist.multiplier = HALF_PI / this._data.mapData.fade.dist.far;
-        let camPosInc = Math.floor(WALL_SIZE / 2);
+        // let camPosInc = Math.floor(WALL_SIZE / 2);
         this._data.mapData.sizeX = this._levelData[levelN].sizeX;
         this._data.mapData.sizeY = this._levelData[levelN].sizeY;
         this._data.mapData.firstWall = 1;
         this._data.mapData.lastWall = this._levelData[levelN].walls.length;
         // this._data.mapData.map = this._levelData[levelN].map;
-        [this._data.mapData.map, this._data.mapData.floorMap, this._data.mapData.ceilingMap] =
-            this._makeMapFromImageData(this._mapBitmaps[levelN].imageData.data, this._levelData[levelN], this._mapBitmaps[levelN].imageData.width);
-        let playerPosX = (Math.floor(this._data.mapData.sizeX / 2) * WALL_SIZE) + camPosInc;
-        let playerPosY = (Math.floor(this._data.mapData.sizeY / 2) * WALL_SIZE) + camPosInc;
+        this._setPlayerPosition(player, Math.floor(this._data.mapData.sizeX / 2), Math.floor(this._data.mapData.sizeY / 2), this._levelData[levelN]);
+        [this._data.mapData.map, this._data.mapData.floorMap, this._data.mapData.ceilingMap, this._data.mapData.lightMap] =
+            this._makeMapFromImageData(this._mapBitmaps[levelN].imageData.data, this._levelData[levelN], this._mapBitmaps[levelN].imageData.width, player);
+        // this._data.mapData.lightMap = new LightMap(this._data.mapData.sizeX, this._data.mapData.sizeY, this._levelData[levelN].mapLightDistance);
         /*let startPosEarned = false;
         for (let y = 0; y < this._data.mapData.sizeY; y++) {
             for (let x = 0; x < this._data.mapData.sizeX; x++) {
@@ -74,22 +178,7 @@ export class Map {
                 break;
             }
         }*/
-        let playerAngle = 0;
-        switch (this._levelData[levelN].startLook) {
-            case LOOK_.LEFT:
-                playerAngle = 270;
-                break;
-            case LOOK_.UP:
-                playerAngle = 0;
-                break;
-            case LOOK_.RIGHT:
-                playerAngle = 90;
-                break;
-            case LOOK_.DOWN:
-                playerAngle = 180;
-                break;
-        }
-        player.setPosition(playerPosX, playerPosY, playerAngle);
+        // player.setPosition(playerPosX, playerPosY, playerAngle);
         this._data.textureData = this._getMapTexturesFromTexturesList(levelN, textures);
         /*///// temporary things ///////
         this._data.mapData.floorMap = new Array(this._data.mapData.sizeX);
@@ -104,14 +193,16 @@ export class Map {
         }*/
     }
 
-    _makeMapFromImageData(mapImageData, mapLevelData, imgSizeX) {
+    _makeMapFromImageData(mapImageData, mapLevelData, imgSizeX, player) {
         // up-left part of image data is walls, foes, doors, etc.
         // up-right part of image is light map
         // down-left part of image is floor
         // down-right part of image is ceiling
         let mapData = new Array(mapLevelData.sizeX),
             floorData = new Array(mapLevelData.sizeX),
-            ceilingData = new Array(mapLevelData.sizeX);
+            ceilingData = new Array(mapLevelData.sizeX),
+            lightData = new LightMap(mapLevelData.sizeX, mapLevelData.sizeY, mapLevelData.mapLightDistance);
+        let camPosInc = Math.floor(WALL_SIZE / 2);
         for (let x = 0; x < mapLevelData.sizeX; x++) {
             mapData[x] = new Array(mapLevelData.sizeY);
             floorData[x] = new Array(mapLevelData.sizeY);
@@ -125,15 +216,28 @@ export class Map {
                     x2 = (x + mapLevelData.sizeX) * 4,
                     y2 = (y + mapLevelData.sizeY) * imgSizeX * 4;
                 let mapDataPos = x1 + y1,
-                    // lightDataPos = x2 + y1, // unused yet
+                    lightDataPos = x2 + y1, // unused yet
                     flDataPos = x1 + y2,
                     ceDataPos = x2 + y2;
-                mapData[x][y] = this._getTileDataFromColor(mapImageData[mapDataPos], mapImageData[mapDataPos + 1], mapImageData[mapDataPos + 2], mapLevelData.wall);
+                let r, g, b;
+                [r, g, b] = [mapImageData[mapDataPos], mapImageData[mapDataPos + 1], mapImageData[mapDataPos + 2]];
+                if (r == START_PLACE.r && g == START_PLACE.g && b == START_PLACE.b) {
+                    // playerPosX = (x * WALL_SIZE) + camPosInc;
+                    // playerPosY = (y * WALL_SIZE) + camPosInc;
+                    this._setPlayerPosition(player, x, y, mapLevelData);
+                }
+                else {
+                    mapData[x][y] = this._getTileDataFromColor(r, g, b, mapLevelData.wall);
+                }
                 floorData[x][y] = this._getTileDataFromColor(mapImageData[flDataPos], mapImageData[flDataPos + 1], mapImageData[flDataPos + 2], mapLevelData.floor);
                 ceilingData[x][y] = this._getTileDataFromColor(mapImageData[ceDataPos], mapImageData[ceDataPos + 1], mapImageData[ceDataPos + 2], mapLevelData.ceiling);
+                if (mapImageData[lightDataPos] == 255 && mapImageData[lightDataPos + 2] == 0) {
+                    lightData.addLightSource(x, y, mapImageData[lightDataPos + 1]);
+                }
             }
         }
-        return [mapData, floorData, ceilingData];
+        lightData.calculateLightmap();
+        return [mapData, floorData, ceilingData, lightData];
     }
 
     _getTileDataFromColor(r, g, b, dataArray) {
@@ -173,12 +277,14 @@ export class Map {
     }
 
     getFloorAndCeiling(x, y) {
-        let floor, ceiling;
         if (x > 0 && y > 0 && x < this._data.mapData.sizeX && y < this._data.mapData.sizeY) {
-            ceiling = this._data.textureData[this._data.mapData.ceilingMap[x][y] - 1];
-            floor = this._data.textureData[this._data.mapData.floorMap[x][y] - 1];
+            let ceiling = this._data.textureData[this._data.mapData.ceilingMap[x][y] - 1];
+            let floor = this._data.textureData[this._data.mapData.floorMap[x][y] - 1];
+            return [ceiling, floor];
         }
-        return [ceiling, floor];
+        else {
+            return [undefined, undefined]
+        }
     }
 
     _getMapTexturesFromTexturesList(levelN, texturesList) {
@@ -188,6 +294,10 @@ export class Map {
             mapTextures.push(texturesList[textureN]);
         }
         return mapTextures;
+    }
+
+    getLightValue(x, y) {
+        return this._data.mapData.lightMap.getLightValue(x, y);
     }
 
 }

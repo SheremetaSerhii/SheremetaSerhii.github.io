@@ -82,9 +82,13 @@ export class Camera {
 
     _curFade = undefined;
 
-    _calculateFade(distance) {
+    _calculateFade(distance, scene, x, y) {
         // return distance <= CLOSE_LIGHT_DISTANCE ? 0 : distance >= FAR_PLUS_CLOSE_LIGHT_DISTANCE ? 1 : Math.sin((distance - CLOSE_LIGHT_DISTANCE) * FADE_MULTIPLIER);
-        return distance <= this._curFade.dist.close ? 0 : distance >= this._curFade.dist.total ? 1 : Math.sin((distance - this._curFade.dist.close) * this._curFade.dist.multiplier);
+        // return distance <= this._curFade.dist.close ? 0 : distance >= this._curFade.dist.total ? 1 : Math.sin((distance - this._curFade.dist.close) * this._curFade.dist.multiplier);
+        let a, b;
+        a = distance <= this._curFade.dist.close ? 0 : distance >= this._curFade.dist.total ? 1 : Math.sin((distance - this._curFade.dist.close) * this._curFade.dist.multiplier);
+        b = scene.getLightValue(x, y);
+        return Math.min(a, b);
     }
 
     drawSceneToScreen(scene, screen) {
@@ -99,7 +103,7 @@ export class Camera {
                 if (ray.surfaceHeight < resolution.y) {
                     this._drawFloorAndCeilingLine(scene, ray.surfaceHeight, ray.controlSizeX, ray.controlSizeY, i);
                 }
-                fade = this._calculateFade(ray.distanceToSurface);
+                fade = this._calculateFade(ray.distanceToSurface, scene, ray.x, ray.y);
                 screen.drawLineFromTextureInPosition(ray.surface, ray.surfaceHeight, ray.positionOnSurface, i, fade, this._curFade.color.str);
             }
         }
@@ -168,7 +172,9 @@ export class Camera {
             positionOnSurface: 0,
             distanceToSurface: 0,
             controlSizeX: 0,
-            controlSizeY: 0
+            controlSizeY: 0,
+            x: 0,
+            y: 0
         };
         let rayDstPos = { x: 0, y: 0 };
         let oldRayDstPos = { x: 0, y: 0 };
@@ -218,6 +224,8 @@ export class Camera {
             }
         }
         if (traceEndingPosition != undefined) {
+            ray.x = traceEndingPosition.sceneX;
+            ray.y = traceEndingPosition.sceneY;
             ray.surface = scene.getSurface(traceEndingPosition.tileX, traceEndingPosition.tileY);
             let a = cameraPointPos.x - traceEndingPosition.sceneX;
             let b = cameraPointPos.y - traceEndingPosition.sceneY;
@@ -346,40 +354,42 @@ export class Camera {
             let surfaceX = x % WALL_SIZE;
             let surfaceY = y % WALL_SIZE;
             [ceiling, floor] = scene.getFloorAndCeiling(tileX, tileY);
-            let floorHypotenuse = multiplierXY * controlHypotenuse;
-            let fade = this._calculateFade(floorHypotenuse);
-            let antifade = 1 - fade;
-            let fadeR = this._curFade.color.r * fade;
-            let fadeG = this._curFade.color.g * fade;
-            let fadeB = this._curFade.color.b * fade;
-            let r, g, b;
-            if (ceiling != undefined) {
-                textureX = Math.floor(surfaceX * ceiling.sizeMultiplierX);
-                textureY = Math.floor(surfaceY * ceiling.sizeMultiplierY);
-                srcPos = (textureX << 2) + ((textureY * ceiling.imageData.width) << 2);
-                r = ceiling.imageData.data[srcPos];
-                g = ceiling.imageData.data[srcPos + 1];
-                b = ceiling.imageData.data[srcPos + 2];
-                r *= antifade;
-                g *= antifade;
-                b *= antifade;
-                this._floorAndCeilingData.data[dstPosCeiling] = r + fadeR;
-                this._floorAndCeilingData.data[dstPosCeiling + 1] = g + fadeG;
-                this._floorAndCeilingData.data[dstPosCeiling + 2] = b + fadeB;
-            }
-            if (floor != undefined) {
-                textureX = Math.floor(surfaceX * floor.sizeMultiplierX);
-                textureY = Math.floor(surfaceY * floor.sizeMultiplierY);
-                srcPos = (textureX << 2) + ((textureY * floor.imageData.width) << 2);
-                r = floor.imageData.data[srcPos];
-                g = floor.imageData.data[srcPos + 1];
-                b = floor.imageData.data[srcPos + 2];
-                r *= antifade;
-                g *= antifade;
-                b *= antifade;
-                this._floorAndCeilingData.data[dstPosFloor] = r + fadeR;
-                this._floorAndCeilingData.data[dstPosFloor + 1] = g + fadeG;
-                this._floorAndCeilingData.data[dstPosFloor + 2] = b + fadeB;
+            if (ceiling != undefined && floor != undefined) {
+                let floorHypotenuse = multiplierXY * controlHypotenuse;
+                let fade = this._calculateFade(floorHypotenuse, scene, x, y);
+                let antifade = 1 - fade;
+                let fadeR = this._curFade.color.r * fade;
+                let fadeG = this._curFade.color.g * fade;
+                let fadeB = this._curFade.color.b * fade;
+                let r, g, b;
+                if (ceiling != undefined) {
+                    textureX = Math.floor(surfaceX * ceiling.sizeMultiplierX);
+                    textureY = Math.floor(surfaceY * ceiling.sizeMultiplierY);
+                    srcPos = (textureX << 2) + ((textureY * ceiling.imageData.width) << 2);
+                    r = ceiling.imageData.data[srcPos];
+                    g = ceiling.imageData.data[srcPos + 1];
+                    b = ceiling.imageData.data[srcPos + 2];
+                    r *= antifade;
+                    g *= antifade;
+                    b *= antifade;
+                    this._floorAndCeilingData.data[dstPosCeiling] = r + fadeR;
+                    this._floorAndCeilingData.data[dstPosCeiling + 1] = g + fadeG;
+                    this._floorAndCeilingData.data[dstPosCeiling + 2] = b + fadeB;
+                }
+                if (floor != undefined) {
+                    textureX = Math.floor(surfaceX * floor.sizeMultiplierX);
+                    textureY = Math.floor(surfaceY * floor.sizeMultiplierY);
+                    srcPos = (textureX << 2) + ((textureY * floor.imageData.width) << 2);
+                    r = floor.imageData.data[srcPos];
+                    g = floor.imageData.data[srcPos + 1];
+                    b = floor.imageData.data[srcPos + 2];
+                    r *= antifade;
+                    g *= antifade;
+                    b *= antifade;
+                    this._floorAndCeilingData.data[dstPosFloor] = r + fadeR;
+                    this._floorAndCeilingData.data[dstPosFloor + 1] = g + fadeG;
+                    this._floorAndCeilingData.data[dstPosFloor + 2] = b + fadeB;
+                }
             }
             h += this._multiplierToRealSize;
             dstPosFloor += this._floorAndCeilingDstInc;
